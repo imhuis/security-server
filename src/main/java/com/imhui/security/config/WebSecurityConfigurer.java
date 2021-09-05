@@ -7,6 +7,7 @@ import com.imhui.security.handler.CustomizeAccessDeniedHandler;
 import com.imhui.security.handler.CustomizeAuthenticationEntryPoint;
 import com.imhui.security.handler.CustomizeAuthenticationFailureHandler;
 import com.imhui.security.handler.CustomizeAuthenticationSuccessHandler;
+import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,10 +35,10 @@ import org.springframework.security.web.firewall.HttpFirewall;
  * @date: 2020/1/28
  * @description:
  */
-@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+//@Configuration
+//@EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -135,6 +136,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
         // 自定义Token认证
 //        http.addFilter(new TokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
+    }
+
+    @Bean
+    public KeycloakSpringBootConfigResolver keycloakSpringBootConfigResolver(){
+        return new KeycloakSpringBootConfigResolver();
     }
 
     @Bean
