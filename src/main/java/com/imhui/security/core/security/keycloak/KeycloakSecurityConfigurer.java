@@ -46,8 +46,8 @@ import org.springframework.security.web.firewall.HttpFirewall;
  * @date: 2020/1/28
  * @description:
  */
-@KeycloakConfiguration
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+//@KeycloakConfiguration
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class KeycloakSecurityConfigurer extends KeycloakWebSecurityConfigurerAdapter {
 
     @Autowired

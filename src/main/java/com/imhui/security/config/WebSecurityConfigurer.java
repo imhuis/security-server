@@ -35,9 +35,9 @@ import org.springframework.security.web.firewall.HttpFirewall;
  * @date: 2020/1/28
  * @description:
  */
-//@Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -48,6 +48,9 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private CustomizeAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     private TokenAuthenticationProvider tokenAuthenticationProvider;
@@ -127,7 +130,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(new CustomizeAccessDeniedHandler())
+                .accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .sessionManagement()
                 .maximumSessions(2)

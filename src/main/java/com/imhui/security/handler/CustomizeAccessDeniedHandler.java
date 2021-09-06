@@ -4,6 +4,7 @@ import com.imhui.security.common.base.ResponseResult;
 import com.imhui.security.common.base.ResponseUtil;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.io.IOException;
  * @date: 2020/1/28
  * @description:
  */
+@Component
 public class CustomizeAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
