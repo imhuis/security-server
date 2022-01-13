@@ -2,6 +2,7 @@ package com.imhui.security.web.controller;
 
 import com.imhui.security.common.base.ResponseResult;
 import com.imhui.security.common.base.ResponseUtil;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
 
-    @RequestMapping("")
+    @RequestMapping("/me")
     public ResponseResult me(){
-        SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         return ResponseUtil.success();
     }
 }

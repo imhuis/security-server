@@ -7,6 +7,8 @@ import com.imhui.security.common.base.ResponseUtil;
 import com.imhui.security.common.util.TokenUtil;
 import com.imhui.security.core.security.bo.SecurityUser;
 import com.imhui.security.core.security.bo.TokenInfo;
+import com.imhui.security.service.AuthService;
+import com.imhui.security.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -39,37 +41,30 @@ import java.util.stream.Collectors;
 public class CustomizeAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private TokenService tokenService;
 
+    // 查询用户信息
     @Autowired
-    private ObjectMapper mapper;
+    private AuthService authService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        // 生成token
-        String newToken = TokenUtil.generateToken();
         User user = (User) authentication.getPrincipal();
-
-        Set<? extends GrantedAuthority> authorities = authentication.getAuthorities().stream().collect(Collectors.toSet());
-
-
+//        String username = authentication.getName();
+        String username = user.getUsername();
+        // 删除token
+//        tokenService.deleteToken("");
+        // 生成token
         SecurityUser securityUser = new SecurityUser();
-//        securityUser.setUsername(user.get());
-//        securityUser.setSessionId(user.getDetails());
+        securityUser.setUsername(username);
+        Set<? extends GrantedAuthority> authorities = authentication.getAuthorities().stream().collect(Collectors.toSet());
+//        securityUser.setAuthorities(authorities);
 
-//        redisTemplate.opsForHash().putAll(newToken, BeanUtil.beanToMap(securityUser));
-
-        // 缓存保存token信息
-        Duration expires = Duration.ofMinutes(60);
-        BoundHashOperations<String,String,Object> boundHashOps = redisTemplate.boundHashOps(newToken);
-        boundHashOps.putAll(BeanUtil.beanToMap(securityUser));
-        redisTemplate.expire(newToken, expires);
+        TokenInfo tokenInfo = tokenService.createToken(securityUser);
 
         ResponseResult<TokenInfo> responseResult = new ResponseResult();
         responseResult.setMessage("Login success");
-        TokenInfo tokenInfo = new TokenInfo(newToken, expires.getSeconds());
-//        tokenInfo.setToken(request.getSession().getId());
         responseResult.setData(tokenInfo);
         ResponseUtil.out(response, responseResult);
     }

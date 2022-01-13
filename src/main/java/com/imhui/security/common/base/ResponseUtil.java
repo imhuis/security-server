@@ -2,6 +2,9 @@ package com.imhui.security.common.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imhui.security.common.enums.ResponseCodeEnum;
+import com.imhui.security.common.util.JsonTools;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +17,7 @@ import java.io.IOException;
  * @date: 2020/1/28
  * @description:
  */
+@Slf4j
 public class ResponseUtil {
 
     /**
@@ -116,6 +120,27 @@ public class ResponseUtil {
     private static <T> ResponseResult<T> build(ResponseCodeEnum codeEnum, T data){
         ResponseResult<T> result = new ResponseResult(codeEnum, data);
         return result;
+    }
+
+    /**
+     * response string.
+     */
+    public static void responseString(HttpServletResponse response, String str) {
+        ResponseResult baseResponse = new ResponseResult(ResponseCodeEnum.SYSTEM_EXCEPTION);
+        if (StringUtils.isNotBlank(str)) {
+            baseResponse.setMessage(str);
+        }
+
+//        ResponseResult retCode;
+//        if (JsonTools.isJson(str) && (retCode = JsonTools.toJavaObject(str, ResponseResult.class)) != null) {
+//            baseResponse = new ResponseResult(retCode);
+//        }
+
+        try {
+            response.getWriter().write(JsonTools.toJSONString(baseResponse));
+        } catch (IOException e) {
+            log.error("fail responseRetCodeException", e);
+        }
     }
 
     public static void out(HttpServletResponse response, ResponseResult responseResult) {

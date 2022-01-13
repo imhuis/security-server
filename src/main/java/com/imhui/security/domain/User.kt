@@ -15,7 +15,7 @@ import javax.validation.constraints.Email
 @Table(name = "s_user")
 class User : BaseEntity(), Serializable {
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "uid", nullable = false)
     var userId: String? = null
 
     @Column(name = "username")
@@ -24,6 +24,7 @@ class User : BaseEntity(), Serializable {
     @Column(name = "email")
     var email: @Email String? = null
 
+    @Column(name = "phone")
     var phone: String? = null
 
     @Column(name = "pwd", nullable = false)

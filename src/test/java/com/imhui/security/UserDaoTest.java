@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.UUID;
+
 @SpringBootTest
 public class UserDaoTest {
 
@@ -19,7 +21,8 @@ public class UserDaoTest {
     @Test
     public void initUser(){
         User newUser = new User();
-        newUser.setUserName("zhangyang");
+        newUser.setUserName("yangz");
+        newUser.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
         newUser.setPassword(passwordEncoder.encode("123456"));
         userDao.save(newUser);
     }

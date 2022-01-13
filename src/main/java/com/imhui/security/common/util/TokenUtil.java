@@ -19,7 +19,9 @@ public class TokenUtil {
 //        ThreadLocalRandom random = ThreadLocalRandom.current();
 //        UUID uuid = new UUID(random.nextInt(), random.nextInt());
 //        return uuid.toString();
-        return UUID.randomUUID().toString().replaceAll("-","");
+        StringBuilder sb = new StringBuilder("Token ");
+        String s = UUID.randomUUID().toString().replaceAll("-", "");
+        return sb.append(s).toString();
     }
 
     public static void main(String[] args) {

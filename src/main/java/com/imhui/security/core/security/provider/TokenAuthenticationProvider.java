@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @date: 2020/1/28
  * @description:
  */
-@Component
+//@Component
 public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationProvider.class);
@@ -34,7 +34,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 //        String a = redisTemplate.opsForValue().get(token);
         Boolean tokenIsExist = redisTemplate.hasKey(token);
         // 存在当前token 则刷新redis过期时间
-        if (!tokenIsExist){
+        if (!tokenIsExist) {
             throw new BadCredentialsException("Token is Invalid");
         }
 
@@ -46,7 +46,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         return TokenAuthentication.class.isAssignableFrom(authentication);
     }
 
-    public TokenInfo createToken(UserDetails userDetails){
+    public TokenInfo createToken(UserDetails userDetails) {
 
         return new TokenInfo(userDetails.getUsername(), 3600);
     }

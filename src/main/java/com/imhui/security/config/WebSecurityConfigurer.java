@@ -2,11 +2,9 @@ package com.imhui.security.config;
 
 import com.imhui.security.core.security.provider.TokenAuthenticationProvider;
 import com.imhui.security.filter.ImageCodeValidateFilter;
-import com.imhui.security.filter.TokenAuthenticationFilter;
+import com.imhui.security.filter.MyTokenAuthenticationFilter;
 import com.imhui.security.handler.CustomizeAccessDeniedHandler;
-import com.imhui.security.handler.CustomizeAuthenticationEntryPoint;
 import com.imhui.security.handler.CustomizeAuthenticationFailureHandler;
-import com.imhui.security.handler.CustomizeAuthenticationSuccessHandler;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -138,7 +136,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         ;
         http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
         // 自定义Token认证
-//        http.addFilter(new TokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
+        http.addFilter(new MyTokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
     }
 
     @Bean
