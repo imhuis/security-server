@@ -3,6 +3,7 @@ package com.imhui.security.config;
 import com.imhui.security.core.security.token.TokenAuthenticationProvider;
 import com.imhui.security.filter.ImageCodeValidateFilter;
 import com.imhui.security.filter.TokenAuthenticationFilter;
+import com.imhui.security.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhui.security.handler.CustomizeAccessDeniedHandler;
 import com.imhui.security.handler.CustomizeAuthenticationFailureHandler;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -147,6 +148,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         ;
         // 自定义Token认证
         http.addFilterBefore(new TokenAuthenticationFilter(authenticationManagerBean()), BasicAuthenticationFilter.class);
+        http.addFilterAt(new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

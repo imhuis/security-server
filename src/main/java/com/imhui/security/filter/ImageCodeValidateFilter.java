@@ -2,11 +2,15 @@ package com.imhui.security.filter;
 
 import com.imhui.security.common.constant.SecurityConstants;
 import com.imhui.security.common.exception.CaptchaValidateException;
+import com.imhui.security.common.util.JsonTools;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -20,6 +24,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -58,7 +64,16 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
     private void validate(ServletWebRequest servletWebRequest) throws ServletRequestBindingException {
         String codeInRequest = ServletRequestUtils.getStringParameter(servletWebRequest.getRequest(), CAPTCHA_VALUE);
         if (StringUtils.isEmpty(codeInRequest)){
-            throw new CaptchaValidateException("验证码不能为空");
+            // parameter里面没有就去json中查找
+            if (StringUtils.containsAny(servletWebRequest.getRequest().getContentType(), MediaType.APPLICATION_JSON_VALUE)){
+                try (InputStream is = servletWebRequest.getRequest().getInputStream()) {
+                    Map<String, String> authenticationRequestMap = JsonTools.streamToObj(is, Map.class);
+                    codeInRequest = authenticationRequestMap.get(CAPTCHA_VALUE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new CaptchaValidateException("验证码不能为空");
+                }
+            }
         }
         String s = (String) servletWebRequest.getRequest().getSession().getAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE);
         if (Objects.isNull(s)){

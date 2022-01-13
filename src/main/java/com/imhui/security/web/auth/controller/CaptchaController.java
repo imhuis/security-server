@@ -1,4 +1,4 @@
-package com.imhui.security.web.controller;
+package com.imhui.security.web.auth.controller;
 
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
@@ -19,13 +19,12 @@ import java.io.IOException;
  * @description:
  */
 @Controller
-public class LoginController {
-
+public class CaptchaController {
 
     @RequestMapping(value = "/public/captcha.png",method = RequestMethod.GET)
     public void imageCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 定义图形验证码的长、宽、验证码字符数、干扰线宽度
-        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(200, 100, 4, 4);
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(260, 100, 4, 4);
         request.getSession().setAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE, captcha.getCode());
 //        captcha.write(response.getOutputStream());
         response.setHeader("Cache-Control", "no-store");

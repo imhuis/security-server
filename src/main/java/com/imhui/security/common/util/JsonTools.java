@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -269,6 +270,18 @@ public class JsonTools {
             return OBJECT_MAPPER.get().readValue(str, javaType);
         } catch (IOException e) {
             log.error("Parse String to Object error : {}" + e.getMessage());
+            return null;
+        }
+    }
+
+    public static <T> T streamToObj(InputStream in, Class<T> clazz) {
+        if (in == null || clazz == null) {
+            return null;
+        }
+        try {
+            return OBJECT_MAPPER.get().readValue(in, clazz);
+        } catch (Exception e) {
+            log.error("Parse InputStream to Object error : {}", e.getMessage());
             return null;
         }
     }
