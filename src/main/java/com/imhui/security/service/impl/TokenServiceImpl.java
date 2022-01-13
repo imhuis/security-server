@@ -1,14 +1,13 @@
 package com.imhui.security.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.UUID;
 import com.imhui.security.common.util.TokenUtil;
 import com.imhui.security.core.security.bo.SecurityUser;
 import com.imhui.security.core.security.bo.TokenInfo;
 import com.imhui.security.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -25,6 +24,9 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     private static final String TOKEN_IN_REDIS_PREFIX = "security:token:";
 
     @Override
@@ -32,10 +34,15 @@ public class TokenServiceImpl implements TokenService {
         // 缓存保存token信息
         String newToken = TokenUtil.generateToken();
         Duration expires = Duration.ofMinutes(60);
-        BoundHashOperations<String,String,Object> boundHashOps = redisTemplate.boundHashOps(TOKEN_IN_REDIS_PREFIX + newToken);
-        boundHashOps.putAll(BeanUtil.beanToMap(user));
-        redisTemplate.expire(newToken, expires);
-        TokenInfo tokenInfo = new TokenInfo(newToken, expires.getSeconds());
+        BoundValueOperations<String, String> vops = redisTemplate.boundValueOps(TOKEN_IN_REDIS_PREFIX + newToken);
+        vops.set(user.getUserId());
+        vops.expire(expires);
+//        BoundHashOperations<String,String,Object> boundHashOps = redisTemplate.boundHashOps(TOKEN_IN_REDIS_PREFIX + newToken);
+//        boundHashOps.putAll(BeanUtil.beanToMap(user));
+
+        StringBuilder sb = new StringBuilder("Token ");
+        String formatToken = sb.append(newToken).toString();
+        TokenInfo tokenInfo = new TokenInfo(formatToken, expires.getSeconds());
         return tokenInfo;
     }
 
@@ -54,7 +61,9 @@ public class TokenServiceImpl implements TokenService {
     public String getSecurityUserIdFromToken(String token) {
 //        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 //        valueOperations.get()
-        return (String) redisTemplate.opsForValue().get(TOKEN_IN_REDIS_PREFIX + token);
+//        BoundValueOperations<String,String> bops = redisTemplate.boundValueOps(TOKEN_IN_REDIS_PREFIX + token);
+//        return bops.get();
+        return stringRedisTemplate.opsForValue().get(TOKEN_IN_REDIS_PREFIX + token);
     }
 
     @Override

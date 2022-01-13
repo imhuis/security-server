@@ -14,14 +14,12 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class TokenUtil {
 
-
     public static String generateToken(){
 //        ThreadLocalRandom random = ThreadLocalRandom.current();
 //        UUID uuid = new UUID(random.nextInt(), random.nextInt());
 //        return uuid.toString();
-        StringBuilder sb = new StringBuilder("Token ");
         String s = UUID.randomUUID().toString().replaceAll("-", "");
-        return sb.append(s).toString();
+        return s;
     }
 
     public static void main(String[] args) {

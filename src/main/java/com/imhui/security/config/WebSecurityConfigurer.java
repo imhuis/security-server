@@ -1,8 +1,8 @@
 package com.imhui.security.config;
 
-import com.imhui.security.core.security.provider.TokenAuthenticationProvider;
+import com.imhui.security.core.security.token.TokenAuthenticationProvider;
 import com.imhui.security.filter.ImageCodeValidateFilter;
-import com.imhui.security.filter.MyTokenAuthenticationFilter;
+import com.imhui.security.filter.TokenAuthenticationFilter;
 import com.imhui.security.handler.CustomizeAccessDeniedHandler;
 import com.imhui.security.handler.CustomizeAuthenticationFailureHandler;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
 
@@ -51,9 +52,6 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     private CustomizeAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
-    private TokenAuthenticationProvider tokenAuthenticationProvider;
-
-    @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     public AuthenticationProvider authenticationProvider(){
@@ -70,8 +68,22 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //                .withUser("admin").password(passwordEncoder().encode("123456")).authorities("ADMIN")
 //                .and()
 //                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//        auth.authenticationProvider(tokenAuthenticationProvider);
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.authenticationProvider(userAuthenticationProvider());
+        auth.authenticationProvider(tokenAuthenticationProvider());
+    }
+
+    @Bean
+    public DaoAuthenticationProvider userAuthenticationProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return daoAuthenticationProvider;
+    }
+    @Bean
+    public AuthenticationProvider tokenAuthenticationProvider() {
+        return new TokenAuthenticationProvider();
     }
 
     @Override
@@ -92,8 +104,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 "/**/*.html",
                 "/**/*.css",
                 "/**/*.js",
-                "/h2-console/**",
-                "/actuator/**"
+                "/h2-console/**"
         );
     }
 
@@ -134,15 +145,15 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .maximumSessions(2)
 //                .expiredSessionStrategy()
         ;
-        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
         // 自定义Token认证
-        http.addFilter(new MyTokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
+        http.addFilterBefore(new TokenAuthenticationFilter(authenticationManagerBean()), BasicAuthenticationFilter.class);
+        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Bean
-    public KeycloakSpringBootConfigResolver keycloakSpringBootConfigResolver(){
-        return new KeycloakSpringBootConfigResolver();
-    }
+//    @Bean
+//    public KeycloakSpringBootConfigResolver keycloakSpringBootConfigResolver(){
+//        return new KeycloakSpringBootConfigResolver();
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){

@@ -64,6 +64,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         TokenInfo tokenInfo = tokenService.createToken(securityUser);
 
         ResponseResult<TokenInfo> responseResult = new ResponseResult();
+        responseResult.setCode(0);
         responseResult.setMessage("Login success");
         responseResult.setData(tokenInfo);
         ResponseUtil.out(response, responseResult);

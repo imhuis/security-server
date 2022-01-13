@@ -12,6 +12,9 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
@@ -63,4 +66,14 @@ public class RedisConfiguration {
         genericObjectPoolConfig.setMaxTotal(20);
         return genericObjectPoolConfig;
     }
+
+    @Bean
+    public RedisTemplate redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisTemplate redisTemplate = new RedisTemplate();
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+        RedisSerializer stringSerializer = new StringRedisSerializer();
+        redisTemplate.setKeySerializer(stringSerializer);
+        return redisTemplate;
+    }
+
 }

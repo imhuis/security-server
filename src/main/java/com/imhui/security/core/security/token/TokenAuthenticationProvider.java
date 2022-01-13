@@ -1,5 +1,6 @@
 package com.imhui.security.core.security.token;
 
+import com.google.common.base.Strings;
 import com.imhui.security.core.security.bo.SecurityUser;
 import com.imhui.security.service.AuthService;
 import com.imhui.security.service.TokenService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +37,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // Authentication Token
         String token = authentication.getName();
+        log.info("Authentication Token:{} -- {}", LocalDateTime.now(), token);
         String uid = null;
         try {
             uid = tokenService.getSecurityUserIdFromToken(token);

@@ -9,10 +9,3 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
 
-# keycloak authentication server configurer
-keycloak:
-  realm: oauth2-realm
-  auth-server-url: http://localhost:8090/auth
-  ssl-required: external
-  resource: app
-  use-resource-role-mappings: true
