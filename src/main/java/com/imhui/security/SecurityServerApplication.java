@@ -3,6 +3,7 @@ package com.imhui.security;
 import org.keycloak.adapters.springboot.KeycloakAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @description:
  */
 @SpringBootApplication(exclude = {KeycloakAutoConfiguration.class})
+@ServletComponentScan
 //@EnableDiscoveryClient
 public class SecurityServerApplication {
 
