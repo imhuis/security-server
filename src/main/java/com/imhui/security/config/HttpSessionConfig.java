@@ -3,18 +3,20 @@ package com.imhui.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * @author: imhuis
  * @date: 2020/1/28
  * @description:
  */
-//@Configuration
-//@EnableRedisHttpSession
+@Configuration
+@EnableRedisHttpSession
 public class HttpSessionConfig implements BeanClassLoaderAware {
 
     private ClassLoader classLoader;
@@ -39,6 +41,5 @@ public class HttpSessionConfig implements BeanClassLoaderAware {
     public HttpSessionEventPublisher httpSessionEventPublisher(){
         return new HttpSessionEventPublisher();
     }
-
 
 }
