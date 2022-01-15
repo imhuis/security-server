@@ -16,7 +16,6 @@ import java.io.IOException;
  * @description: XSS filter
  */
 @Log4j2
-@Component
 @WebFilter(filterName = "xssFilter")
 public class XssFilter implements Filter {
 

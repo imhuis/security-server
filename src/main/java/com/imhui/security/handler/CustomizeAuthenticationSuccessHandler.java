@@ -1,18 +1,12 @@
 package com.imhui.security.handler;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imhui.security.common.base.ResponseResult;
 import com.imhui.security.common.base.ResponseUtil;
-import com.imhui.security.common.util.TokenUtil;
 import com.imhui.security.core.security.bo.SecurityUser;
 import com.imhui.security.core.security.bo.TokenInfo;
 import com.imhui.security.service.AuthService;
 import com.imhui.security.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,13 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**

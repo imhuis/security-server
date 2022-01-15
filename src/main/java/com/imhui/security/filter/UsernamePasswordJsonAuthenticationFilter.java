@@ -1,6 +1,7 @@
 package com.imhui.security.filter;
 
 import com.imhui.security.common.util.JsonTools;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -20,6 +21,7 @@ import java.util.Map;
  * @date: 2022/1/14
  * @description:
  */
+@Slf4j
 public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private String usernameField = "username";
@@ -32,13 +34,14 @@ public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAu
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(null, null);
+        UsernamePasswordAuthenticationToken authRequest = null;
         if (this.postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         } else {
             if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())
                     || MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE.equals(request.getContentType())) {
                 try (InputStream is = request.getInputStream()) {
+                    log.debug("is a json request.");
                     Map<String, String> authenticationMap = JsonTools.streamToObj(is, Map.class);
                     authRequest = new UsernamePasswordAuthenticationToken(
                             authenticationMap.get(usernameField), authenticationMap.get(passwordField));

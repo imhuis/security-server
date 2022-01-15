@@ -3,6 +3,7 @@ package com.imhui.security.filter;
 import com.imhui.security.common.base.ResponseResult;
 import com.imhui.security.common.base.ResponseUtil;
 import com.imhui.security.common.enums.ResponseCodeEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +27,7 @@ import static com.imhui.security.common.constant.SecurityConstants.TOKEN_HEADER_
  * @date: 2020/1/28
  * @description: filter request abstract
  */
+@Slf4j
 public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter {
 
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
@@ -39,6 +41,7 @@ public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
         throws ServletException, IOException {
+        log.debug("TokenAuthenticationFilter do.");
         final String header = request.getHeader(TOKEN_HEADER_NAME);
 
         if (header == null || !header.startsWith(getHeaderPrefix())) {

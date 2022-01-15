@@ -55,12 +55,6 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
 
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        return daoAuthenticationProvider;
-    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -69,19 +63,20 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //                .withUser("admin").password(passwordEncoder().encode("123456")).authorities("ADMIN")
 //                .and()
 //                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
-//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        auth.authenticationProvider(userAuthenticationProvider());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//        auth.authenticationProvider(authenticationProvider());
         auth.authenticationProvider(tokenAuthenticationProvider());
     }
 
     @Bean
-    public DaoAuthenticationProvider userAuthenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
         return daoAuthenticationProvider;
     }
+
     @Bean
     public AuthenticationProvider tokenAuthenticationProvider() {
         return new TokenAuthenticationProvider();
@@ -124,14 +119,14 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/system/**").hasIpAddress("127.0.0.0/16")
 
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
+                .usernameParameter("username").passwordParameter("password")
+                .permitAll()
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(new CustomizeAuthenticationFailureHandler())
-                .permitAll()
                 .and()
                 .logout()
                 .permitAll()
@@ -148,8 +143,9 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         ;
         // 自定义Token认证
         http.addFilterBefore(new TokenAuthenticationFilter(authenticationManagerBean()), BasicAuthenticationFilter.class);
-        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+
         http.addFilterAt(new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 //    @Bean
@@ -158,11 +154,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //    }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    public HttpFirewall httpFirewall(){
+    public HttpFirewall httpFirewall() {
         DefaultHttpFirewall httpFirewall = new DefaultHttpFirewall();
         httpFirewall.setAllowUrlEncodedSlash(true);
         return httpFirewall;

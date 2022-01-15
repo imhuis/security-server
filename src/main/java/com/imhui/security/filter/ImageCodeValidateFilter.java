@@ -67,6 +67,7 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
             // parameter里面没有就去json中查找
             if (StringUtils.containsAny(servletWebRequest.getRequest().getContentType(), MediaType.APPLICATION_JSON_VALUE)){
                 try (InputStream is = servletWebRequest.getRequest().getInputStream()) {
+
                     Map<String, String> authenticationRequestMap = JsonTools.streamToObj(is, Map.class);
                     codeInRequest = authenticationRequestMap.get(CAPTCHA_VALUE);
                 } catch (IOException e) {
