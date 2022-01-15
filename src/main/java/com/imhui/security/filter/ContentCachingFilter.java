@@ -16,7 +16,7 @@ import java.io.IOException;
  * @description:
  */
 @Slf4j
-@WebFilter(urlPatterns = "/**", filterName = "contentCaching")
+@WebFilter(urlPatterns = "/**", filterName = "contentCache")
 public class ContentCachingFilter implements Filter {
 
     @Override

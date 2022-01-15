@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -48,6 +49,9 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
 
     @Autowired
     private CustomizeAccessDeniedHandler accessDeniedHandler;
@@ -123,10 +127,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
-                .usernameParameter("username").passwordParameter("password")
+//                .usernameParameter("username").passwordParameter("password")
                 .permitAll()
                 .successHandler(authenticationSuccessHandler)
-                .failureHandler(new CustomizeAuthenticationFailureHandler())
+                .failureHandler(authenticationFailureHandler)
                 .and()
                 .logout()
                 .permitAll()
@@ -142,11 +146,22 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //                .expiredSessionStrategy()
         ;
         // 自定义Token认证
-//        http.addFilterBefore(new TokenAuthenticationFilter(authenticationManagerBean()), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new TokenAuthenticationFilter(authenticationManagerBean()), BasicAuthenticationFilter.class);
 
-        http.addFilterAt(new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true),
-                UsernamePasswordAuthenticationFilter.class);
-//        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterAt(new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true),
+//                UsernamePasswordAuthenticationFilter.class);
+        // 自定义json登陆必须要在bean中声明
+        http.addFilterAt(usernamePasswordJsonAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter() throws Exception {
+        UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter =
+                new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true);
+        usernamePasswordJsonAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        usernamePasswordJsonAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        return usernamePasswordJsonAuthenticationFilter;
     }
 
     @Bean

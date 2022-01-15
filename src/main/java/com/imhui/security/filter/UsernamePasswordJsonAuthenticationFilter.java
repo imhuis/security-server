@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,32 +44,21 @@ public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAu
         if (this.postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
-        if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())
-                || MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE.equals(request.getContentType())) {
-//            try (InputStream is = request.getInputStream()) {
-//                log.debug("is a json request.");
-//                Map<String, String> authenticationMap = JsonTools.streamToObj(is, Map.class);
-//                authRequest = new UsernamePasswordAuthenticationToken(
-//                        authenticationMap.get(usernameField), authenticationMap.get(passwordField));
-//                log.info("get json value {},{}", authRequest.getPrincipal(), authRequest.getCredentials());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                authRequest = new UsernamePasswordAuthenticationToken(
-//                        "", "");
-//            } finally {
-//                this.setDetails(request, authRequest);
-//                return this.getAuthenticationManager().authenticate(authRequest);
-//            }
-            ContentCachingRequestWrapper requestWrapper = null;
-            if(request instanceof HttpServletRequest){
-                requestWrapper = (ContentCachingRequestWrapper) request;
+        if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
+            try (InputStream is = request.getInputStream()) {
+                log.debug("is a json request.");
+                Map<String, String> authenticationMap = JsonTools.streamToObj(is, Map.class);
+                authRequest = new UsernamePasswordAuthenticationToken(
+                        authenticationMap.get(usernameField), authenticationMap.get(passwordField));
+                log.info("get json value {},{}", authRequest.getPrincipal(), authRequest.getCredentials());
+            } catch (IOException e) {
+                e.printStackTrace();
+                authRequest = new UsernamePasswordAuthenticationToken(
+                        "", "");
+            } finally {
+                this.setDetails(request, authRequest);
+                return this.getAuthenticationManager().authenticate(authRequest);
             }
-//            String jsonBody = IOUtils.toString(requestWrapper.getContentAsByteArray(), "utf-8");
-//            String body = IOUtils.toString(requestWrapper.getBody(),request.getCharacterEncoding());
-//            System.out.println(body);
-//            JSONObject obj = JSON.parseObject(body);
-//            String jsonBody = IOUtils.toString(request.getContentAsByteArray(), "utf-8");
-            return this.getAuthenticationManager().authenticate(authRequest);
         } else {
             return super.attemptAuthentication(request, response);
         }

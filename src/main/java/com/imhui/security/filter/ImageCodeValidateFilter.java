@@ -65,7 +65,7 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
         String codeInRequest = ServletRequestUtils.getStringParameter(servletWebRequest.getRequest(), CAPTCHA_VALUE);
         if (StringUtils.isEmpty(codeInRequest)){
             // parameter里面没有就去json中查找
-            if (StringUtils.containsAny(servletWebRequest.getRequest().getContentType(), MediaType.APPLICATION_JSON_VALUE)){
+            if (MediaType.APPLICATION_JSON_VALUE.equals(servletWebRequest.getRequest().getContentType())) {
                 try (InputStream is = servletWebRequest.getRequest().getInputStream()) {
 
                     Map<String, String> authenticationRequestMap = JsonTools.streamToObj(is, Map.class);
@@ -75,6 +75,8 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
                     throw new CaptchaValidateException("验证码不能为空");
                 }
             }
+        }else {
+            throw new CaptchaValidateException("验证码不能为空");
         }
         String s = (String) servletWebRequest.getRequest().getSession().getAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE);
         if (Objects.isNull(s)){
