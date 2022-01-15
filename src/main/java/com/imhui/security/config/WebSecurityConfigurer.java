@@ -149,11 +149,6 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-//    @Bean
-//    public KeycloakSpringBootConfigResolver keycloakSpringBootConfigResolver(){
-//        return new KeycloakSpringBootConfigResolver();
-//    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
