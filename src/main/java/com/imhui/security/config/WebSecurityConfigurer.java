@@ -63,8 +63,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //                .withUser("admin").password(passwordEncoder().encode("123456")).authorities("ADMIN")
 //                .and()
 //                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//        auth.authenticationProvider(authenticationProvider());
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.authenticationProvider(authenticationProvider());
         auth.authenticationProvider(tokenAuthenticationProvider());
     }
 
@@ -142,10 +142,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //                .expiredSessionStrategy()
         ;
         // 自定义Token认证
-        http.addFilterBefore(new TokenAuthenticationFilter(authenticationManagerBean()), BasicAuthenticationFilter.class);
+//        http.addFilterBefore(new TokenAuthenticationFilter(authenticationManagerBean()), BasicAuthenticationFilter.class);
 
-        http.addFilterAt(new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true),
+                UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 //    @Bean

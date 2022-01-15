@@ -23,7 +23,6 @@ import java.io.IOException;
  * @date: 2020/1/28
  * @description:
  */
-//@Component
 public class MyTokenAuthenticationFilter extends BasicAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(MyTokenAuthenticationFilter.class);

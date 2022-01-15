@@ -2,6 +2,7 @@ package com.imhui.security.core.context;
 
 import com.imhui.security.config.HttpSessionConfig;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: imhuis

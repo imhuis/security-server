@@ -57,6 +57,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //        List<GrantedAuthority> grantedAuthorities = authorityString
 //                .stream().map(authority -> new SimpleGrantedAuthority(authority))
 //                .collect(Collectors.toList());
+        logger.info("find user [{}]", login);
+        logger.info("user info \n {}", user.getUserId());
         return new User(user.getUserName(), user.getPassword(), Collections.emptyList());
     }
 

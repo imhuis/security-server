@@ -12,7 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @description:
  */
 @SpringBootApplication(exclude = {KeycloakAutoConfiguration.class})
-@ServletComponentScan
+//@ServletComponentScan
 //@EnableDiscoveryClient
 public class SecurityServerApplication {
 

@@ -37,35 +37,25 @@ public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAu
         UsernamePasswordAuthenticationToken authRequest = null;
         if (this.postOnly && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
-        } else {
-            if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())
-                    || MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE.equals(request.getContentType())) {
-                try (InputStream is = request.getInputStream()) {
-                    log.debug("is a json request.");
-                    Map<String, String> authenticationMap = JsonTools.streamToObj(is, Map.class);
-                    authRequest = new UsernamePasswordAuthenticationToken(
-                            authenticationMap.get(usernameField), authenticationMap.get(passwordField));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    authRequest = new UsernamePasswordAuthenticationToken(
-                            "", "");
-                } finally {
-                    this.setDetails(request, authRequest);
-                    return this.getAuthenticationManager().authenticate(authRequest);
-                }
-            } else {
-                return super.attemptAuthentication(request, response);
+        }
+        if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())
+                || MediaType.APPLICATION_PROBLEM_JSON_UTF8_VALUE.equals(request.getContentType())) {
+            try (InputStream is = request.getInputStream()) {
+                log.debug("is a json request.");
+                Map<String, String> authenticationMap = JsonTools.streamToObj(is, Map.class);
+                authRequest = new UsernamePasswordAuthenticationToken(
+                        authenticationMap.get(usernameField), authenticationMap.get(passwordField));
+            } catch (IOException e) {
+                e.printStackTrace();
+                authRequest = new UsernamePasswordAuthenticationToken(
+                        "", "");
+            } finally {
+                this.setDetails(request, authRequest);
+                return this.getAuthenticationManager().authenticate(authRequest);
             }
+        } else {
+            return super.attemptAuthentication(request, response);
         }
     }
 
-    @Override
-    protected String obtainPassword(HttpServletRequest request) {
-        return super.obtainPassword(request);
-    }
-
-    @Override
-    protected String obtainUsername(HttpServletRequest request) {
-        return super.obtainUsername(request);
-    }
 }
