@@ -31,8 +31,8 @@ import static com.imhui.security.common.constant.SecurityConstants.TOKEN_HEADER_
 public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter {
 
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
-    private AuthenticationManager authenticationManager;
 
+    private AuthenticationManager authenticationManager;
 
     public AbstractAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -40,7 +40,7 @@ public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         log.debug("TokenAuthenticationFilter do.");
         final String header = request.getHeader(TOKEN_HEADER_NAME);
 
@@ -59,7 +59,7 @@ public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter 
             String errorMessage = failed.getMessage();
             SecurityContextHolder.clearContext();
             //response exception
-//            NodeMgrTools.responseString(response, errorMessage);
+//            ResponseTools.responseString(response, errorMessage);
             ResponseResult result = new ResponseResult(ResponseCodeEnum.AUTH_EXCEPTION);
             result.setData(errorMessage);
             ResponseUtil.out(response, result);

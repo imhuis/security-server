@@ -66,10 +66,11 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
     private void validate(ServletWebRequest servletWebRequest) throws ServletRequestBindingException {
         String codeInRequest = ServletRequestUtils.getStringParameter(servletWebRequest.getRequest(), CAPTCHA_VALUE);
+        // multipart/form-data resolve captcha
         if (StringUtils.isEmpty(codeInRequest)) {
             throw new CaptchaValidateException("验证码不能为空");
         }else {
-            // parameter里面没有就去json中查找
+            // application/json resolve captcha
             if (MediaType.APPLICATION_JSON_VALUE.equals(servletWebRequest.getRequest().getContentType())) {
 //                ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(servletWebRequest.getRequest());
 //                String s = new String(requestWrapper.getContentAsByteArray());
