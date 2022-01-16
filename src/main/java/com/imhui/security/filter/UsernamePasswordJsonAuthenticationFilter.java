@@ -1,8 +1,8 @@
 package com.imhui.security.filter;
 
 import com.imhui.security.common.util.JsonTools;
+import com.imhui.security.common.web.ContentBodyCachingRequestWrapper;
 import io.micrometer.core.instrument.util.IOUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -48,12 +49,12 @@ public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAu
         }
         if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
             log.info("request type:\n {}", request.getClass());
-            ServletWebRequest servletWebRequest = new ServletWebRequest(request);
-            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(servletWebRequest.getRequest());
-            try {
-                log.debug("is a json request.");
-                String str = new String(requestWrapper.getContentAsByteArray());
-                Map<String, String> authenticationMap = JsonTools.stringToObj(str, Map.class);
+//            ServletWebRequest servletWebRequest = new ServletWebRequest(request);
+            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
+            try (InputStream is = requestWrapper.getInputStream()) {
+                log.info("is a json request.");
+                String requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
+                Map<String, String> authenticationMap = JsonTools.stringToObj(requestBody, Map.class);
                 authRequest = new UsernamePasswordAuthenticationToken(
                         authenticationMap.get(usernameField), authenticationMap.get(passwordField));
                 log.info("get json value {},{}", authRequest.getPrincipal(), authRequest.getCredentials());

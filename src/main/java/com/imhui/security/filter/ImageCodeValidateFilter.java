@@ -3,6 +3,7 @@ package com.imhui.security.filter;
 import com.imhui.security.common.constant.SecurityConstants;
 import com.imhui.security.common.exception.CaptchaValidateException;
 import com.imhui.security.common.util.JsonTools;
+import com.imhui.security.common.web.ContentBodyCachingRequestWrapper;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
@@ -55,7 +57,8 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
         logger.debug("result:{}",StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name()));
         if (StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name())){
             try{
-                validate(new ServletWebRequest(request));
+                // 之前用 new ServletWebRequest(request) 封装
+                validate(request);
             }catch (AuthenticationException e){
                 authenticationFailureHandler.onAuthenticationFailure(request, response, e);
                 return;
@@ -64,28 +67,32 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void validate(ServletWebRequest servletWebRequest) throws ServletRequestBindingException {
-        String codeInRequest = ServletRequestUtils.getStringParameter(servletWebRequest.getRequest(), CAPTCHA_VALUE);
+    private void validate(HttpServletRequest request) throws ServletRequestBindingException {
+        String codeInRequest = ServletRequestUtils.getStringParameter(request, CAPTCHA_VALUE);
         // multipart/form-data resolve captcha
         if (StringUtils.isEmpty(codeInRequest)) {
-            throw new CaptchaValidateException("验证码不能为空");
-        }else {
             // application/json resolve captcha
-            if (MediaType.APPLICATION_JSON_VALUE.equals(servletWebRequest.getRequest().getContentType())) {
-//                ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(servletWebRequest.getRequest());
-//                String s = new String(requestWrapper.getContentAsByteArray());
+            if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
+                ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
                 // InputStream is = requestWrapper.getInputStream() 流只能读取一次
-                try (InputStream is = servletWebRequest.getRequest().getInputStream()) {
-                    Map<String, String> authenticationRequestMap = JsonTools.streamToObj(is, Map.class);
+                try (InputStream is = requestWrapper.getInputStream()) {
+                    String requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
+//                    String requestBody = new String(requestWrapper.getRequest().getInputStream().getContentAsByteArray());
+                    Map<String, String> authenticationRequestMap = JsonTools.stringToObj(requestBody, Map.class);
                     codeInRequest = authenticationRequestMap.get(CAPTCHA_VALUE);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
-                } finally {
+                    throw new CaptchaValidateException("验证码不能为空");
+                }
+                finally {
 
                 }
             }
+        }else {
+            throw new CaptchaValidateException("验证码不能为空");
         }
-        String s = (String) servletWebRequest.getRequest().getSession().getAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE);
+        String s = (String) request.getSession().getAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE);
         if (Objects.isNull(s)){
             throw new CaptchaValidateException("验证码不存在");
         }
@@ -93,7 +100,7 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
         if (!StringUtils.equalsIgnoreCase(s, codeInRequest)){
             throw new CaptchaValidateException("验证码错误");
         }
-        servletWebRequest.getRequest().getSession().removeAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE);
+        request.getSession().removeAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE);
 
     }
 }
