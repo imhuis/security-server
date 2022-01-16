@@ -4,6 +4,7 @@ import com.imhui.security.common.util.JsonTools;
 import com.imhui.security.common.web.ContentBodyCachingRequestWrapper;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -48,12 +49,14 @@ public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAu
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
-            log.info("request type:\n {}", request.getClass());
 //            ServletWebRequest servletWebRequest = new ServletWebRequest(request);
-            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
-            try (InputStream is = requestWrapper.getInputStream()) {
+            // className org.springframework.web.util.ContentCachingRequestWrapper
+            ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
+            // InputStream is = requestWrapper.getInputStream()
+            try {
+                String requestBody = new String(requestWrapper.getContentAsByteArray());
                 log.info("is a json request.");
-                String requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
+//                String requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
                 Map<String, String> authenticationMap = JsonTools.stringToObj(requestBody, Map.class);
                 authRequest = new UsernamePasswordAuthenticationToken(
                         authenticationMap.get(usernameField), authenticationMap.get(passwordField));

@@ -56,11 +56,15 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
         logger.debug("[ImageCodeValidateFilter] request uri:{}", request.getRequestURI());
         logger.debug("result:{}",StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name()));
         if (StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name())){
+            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
             try{
                 // 之前用 new ServletWebRequest(request) 封装
-                validate(request);
+                validate(requestWrapper);
             }catch (AuthenticationException e){
                 authenticationFailureHandler.onAuthenticationFailure(request, response, e);
+                return;
+            } finally {
+                filterChain.doFilter(requestWrapper, response);
                 return;
             }
         }
@@ -73,9 +77,8 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
         if (StringUtils.isEmpty(codeInRequest)) {
             // application/json resolve captcha
             if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
-                ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
                 // InputStream is = requestWrapper.getInputStream() 流只能读取一次
-                try (InputStream is = requestWrapper.getInputStream()) {
+                try (InputStream is = request.getInputStream()) {
                     String requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
 //                    String requestBody = new String(requestWrapper.getRequest().getInputStream().getContentAsByteArray());
                     Map<String, String> authenticationRequestMap = JsonTools.stringToObj(requestBody, Map.class);
