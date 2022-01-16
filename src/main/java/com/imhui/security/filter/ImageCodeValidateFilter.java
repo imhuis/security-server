@@ -3,6 +3,8 @@ package com.imhui.security.filter;
 import com.imhui.security.common.constant.SecurityConstants;
 import com.imhui.security.common.exception.CaptchaValidateException;
 import com.imhui.security.common.util.JsonTools;
+import io.micrometer.core.instrument.util.IOUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -34,6 +37,7 @@ import java.util.Objects;
  * @description:
  */
 @Component
+@Slf4j
 public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageCodeValidateFilter.class);
@@ -47,7 +51,6 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // request.getRequestURI().endsWith(LOGIN_URL)
         logger.debug("[ImageCodeValidateFilter] request uri:{}", request.getRequestURI());
         logger.debug("result:{}",StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name()));
         if (StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name())){
@@ -63,20 +66,23 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
     private void validate(ServletWebRequest servletWebRequest) throws ServletRequestBindingException {
         String codeInRequest = ServletRequestUtils.getStringParameter(servletWebRequest.getRequest(), CAPTCHA_VALUE);
-        if (StringUtils.isEmpty(codeInRequest)){
+        if (StringUtils.isEmpty(codeInRequest)) {
+            throw new CaptchaValidateException("验证码不能为空");
+        }else {
             // parameter里面没有就去json中查找
             if (MediaType.APPLICATION_JSON_VALUE.equals(servletWebRequest.getRequest().getContentType())) {
+//                ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(servletWebRequest.getRequest());
+//                String s = new String(requestWrapper.getContentAsByteArray());
+                // InputStream is = requestWrapper.getInputStream() 流只能读取一次
                 try (InputStream is = servletWebRequest.getRequest().getInputStream()) {
-
                     Map<String, String> authenticationRequestMap = JsonTools.streamToObj(is, Map.class);
                     codeInRequest = authenticationRequestMap.get(CAPTCHA_VALUE);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    throw new CaptchaValidateException("验证码不能为空");
+                } finally {
+
                 }
             }
-        }else {
-            throw new CaptchaValidateException("验证码不能为空");
         }
         String s = (String) servletWebRequest.getRequest().getSession().getAttribute(SecurityConstants.SESSION_KEY_IMAGE_CODE);
         if (Objects.isNull(s)){

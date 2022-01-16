@@ -16,21 +16,26 @@ import java.io.IOException;
  * @description:
  */
 @Slf4j
-@WebFilter(urlPatterns = "/**", filterName = "contentCache")
+//@WebFilter(urlPatterns = "/*", filterName = "contentCache",
+//        dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.INCLUDE, DispatcherType.ASYNC})
 public class ContentCachingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("ContentCachingFilter init.");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        log.debug("ContentCachingFilter do.");
         String contentType = request.getContentType();
         if (request instanceof HttpServletRequest) {
-            HttpServletRequest requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
             if (contentType != null && contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
                 chain.doFilter(request, response);
             } else {
+                ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
+                log.info("{}", new String(requestWrapper.getContentAsByteArray()));
+                log.info("{}", new String(requestWrapper.getContentAsByteArray()));
                 chain.doFilter(requestWrapper, response);
             }
             return;

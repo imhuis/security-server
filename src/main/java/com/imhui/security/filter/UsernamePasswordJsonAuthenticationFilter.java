@@ -2,6 +2,7 @@ package com.imhui.security.filter;
 
 import com.imhui.security.common.util.JsonTools;
 import io.micrometer.core.instrument.util.IOUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +14,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,16 +47,16 @@ public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAu
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
         if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
-            try (InputStream is = request.getInputStream()) {
+            log.info("request type:\n {}", request.getClass());
+            ServletWebRequest servletWebRequest = new ServletWebRequest(request);
+            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(servletWebRequest.getRequest());
+            try {
                 log.debug("is a json request.");
-                Map<String, String> authenticationMap = JsonTools.streamToObj(is, Map.class);
+                String str = new String(requestWrapper.getContentAsByteArray());
+                Map<String, String> authenticationMap = JsonTools.stringToObj(str, Map.class);
                 authRequest = new UsernamePasswordAuthenticationToken(
                         authenticationMap.get(usernameField), authenticationMap.get(passwordField));
                 log.info("get json value {},{}", authRequest.getPrincipal(), authRequest.getCredentials());
-            } catch (IOException e) {
-                e.printStackTrace();
-                authRequest = new UsernamePasswordAuthenticationToken(
-                        "", "");
             } finally {
                 this.setDetails(request, authRequest);
                 return this.getAuthenticationManager().authenticate(authRequest);
