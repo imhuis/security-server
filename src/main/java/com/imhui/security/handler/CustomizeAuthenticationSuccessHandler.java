@@ -44,8 +44,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         // 删除token
 //        tokenService.deleteToken("");
         // 生成token
-        SecurityUser securityUser = new SecurityUser();
-        securityUser.setUsername(username);
+        SecurityUser securityUser = new SecurityUser("");
         Set<? extends GrantedAuthority> authorities = authentication.getAuthorities().stream().collect(Collectors.toSet());
 //        securityUser.setAuthorities(authorities);
 

@@ -35,7 +35,7 @@ public class TokenServiceImpl implements TokenService {
         String newToken = TokenUtil.generateToken();
         Duration expires = Duration.ofMinutes(60);
         BoundValueOperations<String, String> vops = redisTemplate.boundValueOps(TOKEN_IN_REDIS_PREFIX + newToken);
-        vops.set(user.getUserId());
+        vops.set(user.getUid());
         vops.expire(expires);
 //        BoundHashOperations<String,String,Object> boundHashOps = redisTemplate.boundHashOps(TOKEN_IN_REDIS_PREFIX + newToken);
 //        boundHashOps.putAll(BeanUtil.beanToMap(user));
@@ -73,6 +73,6 @@ public class TokenServiceImpl implements TokenService {
             return null;
         }
         // map 转 object
-        return new SecurityUser();
+        return new SecurityUser("");
     }
 }

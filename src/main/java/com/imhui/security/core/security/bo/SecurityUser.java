@@ -1,41 +1,41 @@
 package com.imhui.security.core.security.bo;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * @author: imhuis
  * @date: 2020/1/28
  * @description:
  */
-public class SecurityUser implements Serializable {
+public class SecurityUser extends User implements Serializable {
 
-    private String userId;
-    private String username;
+    private String uid;
     private String phone;
     private String email;
 
-    // 权限
-    private Set<GrantedAuthority> authorities;
-
-    private String sessionId;
-
-    public String getUserId() {
-        return userId;
+    public SecurityUser(String uid) {
+        this(null, null, null);
+        this.uid = uid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, authorities);
     }
 
-    public String getUsername() {
-        return username;
+    public SecurityUser(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getPhone() {
@@ -54,19 +54,4 @@ public class SecurityUser implements Serializable {
         this.email = email;
     }
 
-    public Set<GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
 }

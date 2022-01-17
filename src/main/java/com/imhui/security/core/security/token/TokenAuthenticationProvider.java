@@ -73,9 +73,9 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     private AbstractAuthenticationToken buildAuthentication(String uid) {
         SecurityUser securityUser = authService.queryByUid(uid);
-        log.debug("securityUser > uid: {}", securityUser.getUserId());
+        log.debug("securityUser > uid: {}", securityUser.getUid());
 //        return new TokenAuthenticationToken(securityUser.getAccount(), buildAuthorities(tbAccountInfo));
-        return new TokenAuthenticationToken(securityUser.getUserId());
+        return new TokenAuthenticationToken(securityUser.getUid());
     }
 
 //    private List<String> getUserAuthorities(SecurityUser user) {

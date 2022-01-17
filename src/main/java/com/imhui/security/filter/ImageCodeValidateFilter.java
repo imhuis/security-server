@@ -60,12 +60,12 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
             try{
                 // 之前用 new ServletWebRequest(request) 封装
                 validate(requestWrapper);
+                request = requestWrapper;
             }catch (AuthenticationException e){
                 authenticationFailureHandler.onAuthenticationFailure(request, response, e);
                 return;
             } finally {
-                filterChain.doFilter(requestWrapper, response);
-                return;
+
             }
         }
         filterChain.doFilter(request, response);

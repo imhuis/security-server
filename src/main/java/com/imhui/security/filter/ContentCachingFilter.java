@@ -1,6 +1,5 @@
 package com.imhui.security.filter;
 
-import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -16,7 +15,7 @@ import java.io.IOException;
  * @description:
  */
 @Slf4j
-//@WebFilter(urlPatterns = "/*", filterName = "contentCache",
+//@WebFilter(urlPatterns = "/*", filterName = "contentCacheFilter",
 //        dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.INCLUDE, DispatcherType.ASYNC})
 public class ContentCachingFilter implements Filter {
 
