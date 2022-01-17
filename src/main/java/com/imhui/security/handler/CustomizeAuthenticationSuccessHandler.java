@@ -2,6 +2,7 @@ package com.imhui.security.handler;
 
 import com.imhui.security.common.base.ResponseResult;
 import com.imhui.security.common.base.ResponseUtil;
+import com.imhui.security.core.security.bo.LoginDetails;
 import com.imhui.security.core.security.bo.SecurityUser;
 import com.imhui.security.core.security.bo.TokenInfo;
 import com.imhui.security.service.AuthService;
@@ -44,11 +45,12 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         // 删除token
 //        tokenService.deleteToken("");
         // 生成token
-        SecurityUser securityUser = new SecurityUser("");
+        LoginDetails loginDetails = new LoginDetails();
+        loginDetails.setUsername(username);
         Set<? extends GrantedAuthority> authorities = authentication.getAuthorities().stream().collect(Collectors.toSet());
 //        securityUser.setAuthorities(authorities);
 
-        TokenInfo tokenInfo = tokenService.createToken(securityUser);
+        TokenInfo tokenInfo = tokenService.createToken(loginDetails);
 
         ResponseResult<TokenInfo> responseResult = new ResponseResult();
         responseResult.setCode(0);

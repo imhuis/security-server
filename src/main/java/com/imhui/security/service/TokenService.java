@@ -1,5 +1,6 @@
 package com.imhui.security.service;
 
+import com.imhui.security.core.security.bo.LoginDetails;
 import com.imhui.security.core.security.bo.SecurityUser;
 import com.imhui.security.core.security.bo.TokenInfo;
 import org.springframework.security.core.userdetails.User;
@@ -13,10 +14,10 @@ public interface TokenService {
 
     /**
      * 生成token
-     * @param user
+     * @param loginDetails
      * @return
      */
-    TokenInfo createToken(SecurityUser user);
+    TokenInfo createToken(LoginDetails loginDetails);
 
     /**
      * token续期

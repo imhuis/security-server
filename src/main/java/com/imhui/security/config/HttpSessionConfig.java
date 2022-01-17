@@ -18,7 +18,8 @@ import org.springframework.session.web.http.HttpSessionIdResolver;
  * @description:
  */
 @Configuration
-@EnableRedisHttpSession
+@EnableRedisHttpSession(redisNamespace = "ss:session", cleanupCron = "0 0 * * * *",
+        maxInactiveIntervalInSeconds = 3600)
 public class HttpSessionConfig implements BeanClassLoaderAware {
 
     private ClassLoader classLoader;
@@ -29,11 +30,11 @@ public class HttpSessionConfig implements BeanClassLoaderAware {
     }
 
     @Bean
-    public RedisSerializer<Object> serializer(){
+    public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
         return new GenericJackson2JsonRedisSerializer(objectMapper());
     }
 
-    private ObjectMapper objectMapper(){
+    private ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModules(SecurityJackson2Modules.getModules(this.classLoader));
         return objectMapper;

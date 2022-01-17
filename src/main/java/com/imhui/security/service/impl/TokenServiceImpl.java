@@ -3,6 +3,7 @@ package com.imhui.security.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import com.imhui.security.common.util.TokenUtil;
+import com.imhui.security.core.security.bo.LoginDetails;
 import com.imhui.security.core.security.bo.SecurityUser;
 import com.imhui.security.core.security.bo.TokenInfo;
 import com.imhui.security.service.TokenService;
@@ -30,7 +31,7 @@ public class TokenServiceImpl implements TokenService {
     private static final String TOKEN_IN_REDIS_PREFIX = "security:token:";
 
     @Override
-    public TokenInfo createToken(SecurityUser user) {
+    public TokenInfo createToken(LoginDetails user) {
         // 缓存保存token信息
         String newToken = TokenUtil.generateToken();
         Duration expires = Duration.ofMinutes(60);
