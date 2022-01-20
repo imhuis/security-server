@@ -16,16 +16,17 @@
 
     <properties>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
+        <spring-cloud-alibaba.version>2.2.7.RELEASE</spring-cloud-alibaba.version>
         <java.version>11</java.version>
         <kotlin.version>1.5.30-M1</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-consul-discovery</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -75,14 +76,12 @@
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-security-adapter</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-oauth2-client</artifactId>-->
-<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-dubbo</artifactId>
+            <version>2.2.7.RELEASE</version>
+        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
@@ -206,6 +205,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.session</groupId>
                 <artifactId>spring-session-bom</artifactId>
                 <version>2021.1.1</version>
@@ -229,7 +235,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.imhui.security.SecurityServerApplication</mainClass>
+                    <mainClass>com.imhuis.security.SecurityServerApplication</mainClass>
                     <layers>
                         <enabled>true</enabled>
                     </layers>
@@ -254,7 +260,7 @@
                         <image>imhui.org/imhuis/${project.artifactId}</image>
                     </to>
                     <container>
-                        <mainClass>com.imhui.security.SecurityServerApplication</mainClass>
+                        <mainClass>com.imhuis.security.SecurityServerApplication</mainClass>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                     </container>
 

@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    consul:
+      discovery:
+        instance-id: ${spring.application.name}:${server.port}
+        prefer-ip-address: true
+      host: localhost
+      port: 8500
+dubbo:
+  scan:
+    base-packages: com.imhui.security.provider
+  protocols:
+    dubbo:
+      name: dubbo
+      port: -1
+  registry:
+    address: spring-cloud://localhost
+  consumer:
+    timeout: 5000
+    check: false
+    retries: 1
