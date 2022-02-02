@@ -119,7 +119,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/public/**").permitAll()
-                .antMatchers("/system/**").hasIpAddress("127.0.0.0/16")
+                .antMatchers("/actuator/**").hasIpAddress("127.0.0.0/8")
 
                 .anyRequest().authenticated()
                 .and()
