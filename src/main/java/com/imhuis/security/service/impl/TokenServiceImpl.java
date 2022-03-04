@@ -72,6 +72,7 @@ public class TokenServiceImpl implements TokenService {
             return null;
         }
         // map 转 object
-        return new SecurityUser("");
+//        return new SecurityUser();
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.imhuis.security.core.security;
 
+import com.imhuis.security.core.security.bo.SecurityUser;
 import com.imhuis.security.repository.UserDao;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
@@ -62,7 +63,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //                .collect(Collectors.toList());
         logger.info("find user [{}]", login);
         logger.info("user info \n userid:{}", user.getUserId());
-        return new User(user.getUserName(), user.getPassword(), Collections.emptyList());
+        return new SecurityUser(user.getUserName(), user.getPassword(), Collections.emptyList(),
+                user.getUserId(), user.getPhone(), user.getEmail());
     }
 
 }
