@@ -80,22 +80,34 @@ public class SecurityConfiguration {
 //                .disable()
                 .cors()
                 .and()
-                .authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/public/**").permitAll()
-                .antMatchers(
-                        "/*.html",
-                        "/favicon.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/h2-console/**").permitAll()
-                .antMatchers("/actuator/**")
-                .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
-                .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
-
-                .anyRequest().authenticated()
-                .and()
+                .authorizeRequests(authorize ->
+                        authorize.antMatchers("/login").permitAll()
+                                .antMatchers("/public/**").permitAll()
+                                .antMatchers(
+                                        "/*.html",
+                                        "/favicon.ico",
+                                        "/**/*.html",
+                                        "/**/*.css",
+                                        "/**/*.js",
+                                        "/h2-console/**").permitAll()
+                                .antMatchers("/actuator/**")
+                                .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
+                                .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
+                                .anyRequest().authenticated())
+//                .antMatchers("/login").permitAll()
+//                .antMatchers("/public/**").permitAll()
+//                .antMatchers(
+//                        "/*.html",
+//                        "/favicon.ico",
+//                        "/**/*.html",
+//                        "/**/*.css",
+//                        "/**/*.js",
+//                        "/h2-console/**").permitAll()
+//                .antMatchers("/actuator/**")
+//                .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
+//                .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
+//                .anyRequest().authenticated()
+//                .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
 //                .usernameParameter("username").passwordParameter("password")
