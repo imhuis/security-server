@@ -1,7 +1,9 @@
 package com.imhuis.security.core.security;
 
+import com.imhuis.security.common.exception.CustomizeException;
 import com.imhuis.security.core.security.bo.SecurityUser;
 import com.imhuis.security.repository.UserDao;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.*;
 
@@ -52,6 +55,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private User createSpringSecurityUser(String login, com.imhuis.security.domain.User user){
+        String userId = Optional.ofNullable(user.getUserId())
+                .orElseThrow(() -> new CustomizeException("uid undefined"));
+        String phone = Optional.ofNullable(user.getPhone()).orElseGet(() -> "undefined");
+        String email = Optional.ofNullable(user.getEmail()).orElseGet(() -> "undefined");
+        StringUtils.isBlank(userId);
 //        if (false){
 //            throw new UserNotActivatedException("");
 //        }
@@ -64,7 +72,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         logger.info("find user [{}]", login);
         logger.info("user info \n userid:{}", user.getUserId());
         return new SecurityUser(user.getUserName(), user.getPassword(), Collections.emptyList(),
-                user.getUserId(), user.getPhone(), user.getEmail());
+                user.getUserId(), phone, email);
     }
 
 }

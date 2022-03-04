@@ -29,6 +29,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 
 /**
  * @author: imhuis
@@ -142,8 +145,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
                 .and()
-                .sessionManagement()
-                .maximumSessions(2)
+                .sessionManagement(sessionManagement -> sessionManagement.maximumSessions(5))
 //                .expiredSessionStrategy()
         ;
         // 自定义Token认证
@@ -157,6 +159,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //TODO 后期优化，验证码不放在session里面
 //        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
+//    @Bean
+//    public SpringSessionBackedSessionRegistry<S> sessionRegistry() {
+//        return new SpringSessionBackedSessionRegistry<>(this.sessionRepository);
+//    }
 
     @Bean
     public PreLoginFilter preLoginFilter() {

@@ -19,7 +19,6 @@ public class UserController {
     @RequestMapping("/me")
     public ResponseResult me(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        return ResponseUtil.success();
+        return ResponseUtil.success(authentication);
     }
 }
