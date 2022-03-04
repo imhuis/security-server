@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit;
  * @date: 2021/9/6
  * @description:
  */
-@Configuration
-@EnableAuthorizationServer
+//@Configuration
+//@EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired

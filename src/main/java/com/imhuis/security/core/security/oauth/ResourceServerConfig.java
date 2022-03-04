@@ -12,8 +12,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
  * @date: 2021/9/6
  * @description:
  */
-@Configuration
-@EnableResourceServer
+//@Configuration
+//@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
