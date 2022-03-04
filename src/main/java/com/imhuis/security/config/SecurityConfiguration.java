@@ -6,6 +6,8 @@ import com.imhuis.security.core.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.security.core.security.token.TokenAuthenticationProvider;
 import com.imhuis.security.handler.CustomizeAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
@@ -19,6 +21,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -73,8 +76,8 @@ public class SecurityConfiguration {
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http.authorizeRequests();
         registry
                 .and()
-                .csrf()
-                .disable()
+                .csrf(CsrfConfigurer::disable)
+//                .disable()
                 .cors()
                 .and()
                 .authorizeRequests()
@@ -87,7 +90,9 @@ public class SecurityConfiguration {
                         "/**/*.css",
                         "/**/*.js",
                         "/h2-console/**").permitAll()
-                .antMatchers("/actuator/**").hasIpAddress("127.0.0.0/8")
+                .antMatchers("/actuator/**")
+                .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
+                .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
 
                 .anyRequest().authenticated()
                 .and()
