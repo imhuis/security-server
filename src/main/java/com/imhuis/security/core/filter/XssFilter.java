@@ -1,4 +1,4 @@
-package com.imhuis.security.filter;
+package com.imhuis.security.core.filter;
 
 import lombok.extern.log4j.Log4j2;
 

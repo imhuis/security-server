@@ -1,4 +1,4 @@
-package com.imhuis.security.filter;
+package com.imhuis.security.core.filter;
 
 import com.imhuis.security.core.security.token.TokenAuthenticationToken;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

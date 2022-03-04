@@ -1,9 +1,10 @@
 package com.imhuis.security.config;
 
+import com.imhuis.security.core.filter.PreLoginFilter;
 import com.imhuis.security.core.security.token.TokenAuthenticationProvider;
-import com.imhuis.security.filter.ImageCodeValidateFilter;
-import com.imhuis.security.filter.TokenAuthenticationFilter;
-import com.imhuis.security.filter.UsernamePasswordJsonAuthenticationFilter;
+import com.imhuis.security.core.filter.ImageCodeValidateFilter;
+import com.imhuis.security.core.filter.TokenAuthenticationFilter;
+import com.imhuis.security.core.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.security.handler.CustomizeAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -56,6 +57,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
+
+
 
 
     @Override
@@ -149,8 +152,15 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 //        http.addFilterAt(new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true),
 //                UsernamePasswordAuthenticationFilter.class);
         // 自定义json登陆必须要在bean中声明
+        http.addFilterBefore(preLoginFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(usernamePasswordJsonAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+//TODO 后期优化，验证码不放在session里面
+//        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public PreLoginFilter preLoginFilter() {
+        return new PreLoginFilter("/login");
     }
 
     @Bean

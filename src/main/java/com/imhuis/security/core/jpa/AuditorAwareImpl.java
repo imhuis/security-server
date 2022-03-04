@@ -18,7 +18,7 @@ import java.util.Optional;
 @Component
 public class AuditorAwareImpl implements AuditorAware<Long> {
 
-    final private Logger logger = LoggerFactory.getLogger(AuditorAwareImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(AuditorAwareImpl.class);
 
     @Override
     public Optional<Long> getCurrentAuditor() {
@@ -26,7 +26,7 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User user = (User) authentication.getPrincipal();
             return Optional.of(user.getId());
-        }catch (ClassCastException e){
+        }catch (ClassCastException e) {
             logger.info(e.getMessage());
             return Optional.empty();
         }

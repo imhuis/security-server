@@ -23,8 +23,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
-    @Autowired
     private UserDao userDao;
+
+    public UserDetailsServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -58,7 +61,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //                .stream().map(authority -> new SimpleGrantedAuthority(authority))
 //                .collect(Collectors.toList());
         logger.info("find user [{}]", login);
-        logger.info("user info \n {}", user.getUserId());
+        logger.info("user info \n userid:{}", user.getUserId());
         return new User(user.getUserName(), user.getPassword(), Collections.emptyList());
     }
 

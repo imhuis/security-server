@@ -1,4 +1,4 @@
-package com.imhuis.security.filter;
+package com.imhuis.security.core.filter;
 
 import com.google.common.base.Strings;
 import com.imhuis.security.common.constant.SecurityConstants;

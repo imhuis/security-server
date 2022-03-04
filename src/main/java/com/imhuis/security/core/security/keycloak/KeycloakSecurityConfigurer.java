@@ -1,7 +1,7 @@
 package com.imhuis.security.core.security.keycloak;
 
 import com.imhuis.security.core.security.provider.TokenAuthenticationProvider;
-import com.imhuis.security.filter.ImageCodeValidateFilter;
+import com.imhuis.security.core.filter.ImageCodeValidateFilter;
 import com.imhuis.security.handler.CustomizeAccessDeniedHandler;
 import com.imhuis.security.handler.CustomizeAuthenticationFailureHandler;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;

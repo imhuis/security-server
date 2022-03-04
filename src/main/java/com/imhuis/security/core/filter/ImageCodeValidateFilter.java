@@ -1,4 +1,4 @@
-package com.imhuis.security.filter;
+package com.imhuis.security.core.filter;
 
 import com.imhuis.security.common.constant.SecurityConstants;
 import com.imhuis.security.common.exception.CaptchaValidateException;

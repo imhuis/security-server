@@ -1,4 +1,4 @@
-package com.imhuis.security.filter;
+package com.imhuis.security.core.filter;
 
 import com.imhuis.security.common.util.JsonTools;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAu
             // InputStream is = requestWrapper.getInputStream()
             try {
                 String requestBody = new String(requestWrapper.getContentAsByteArray());
-                log.info("is a json request.");
+                log.info("login is a json request.");
 //                String requestBody = IOUtils.toString(is, StandardCharsets.UTF_8);
                 Map<String, String> authenticationMap = JsonTools.stringToObj(requestBody, Map.class);
                 authRequest = new UsernamePasswordAuthenticationToken(
