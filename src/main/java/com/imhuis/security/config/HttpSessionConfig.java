@@ -12,6 +12,7 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.jackson2.CoreJackson2Module;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -26,9 +27,14 @@ import org.springframework.session.web.http.HttpSessionIdResolver;
 @Configuration
 @EnableRedisHttpSession(redisNamespace = "ss:session", cleanupCron = "0 0 * * * *",
         maxInactiveIntervalInSeconds = 3600)
-public class HttpSessionConfig implements BeanClassLoaderAware {
+public class HttpSessionConfig extends AbstractSecurityWebApplicationInitializer implements BeanClassLoaderAware {
 
     private ClassLoader classLoader;
+
+    @Override
+    protected boolean enableHttpSessionEventPublisher() {
+        return true;
+    }
 
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {

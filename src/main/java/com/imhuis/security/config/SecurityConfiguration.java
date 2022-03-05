@@ -4,6 +4,7 @@ import com.imhuis.security.core.filter.PreLoginFilter;
 import com.imhuis.security.core.filter.TokenAuthenticationFilter;
 import com.imhuis.security.core.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.security.core.security.token.TokenAuthenticationProvider;
+import com.imhuis.security.core.security.token.TokenAuthenticationToken;
 import com.imhuis.security.handler.CustomizeAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -22,8 +23,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
+import org.springframework.security.config.authentication.AuthenticationManagerFactoryBean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,10 +77,9 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManagerBuilder builder) throws Exception {
-        builder.authenticationProvider(authenticationProvider());
-        builder.authenticationProvider(tokenAuthenticationProvider());
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+//                .authenticationManager(authenticationManager())
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeRequests(authorize -> authorize
@@ -106,21 +110,41 @@ public class SecurityConfiguration {
                 .accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .maximumSessions(2))
+                        .sessionConcurrency(concurrency -> concurrency
+                                .maximumSessions(1))
+                )
 //                .expiredSessionStrategy()
+        .apply(new DefaultSecurityDsl())
         ;
         // 自定义Token认证
-        http.addFilterBefore(new TokenAuthenticationFilter(builder.getObject()), BasicAuthenticationFilter.class);
-        // 自定义json登陆必须要在bean中声明
-        http.addFilterBefore(preLoginFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAt(usernamePasswordJsonAuthenticationFilter(builder.getObject()), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(new TokenAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
+//        // 自定义json登陆必须要在bean中声明
+//        http.addFilterBefore(preLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterAt(usernamePasswordJsonAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-    @Bean
-    public PreLoginFilter preLoginFilter() {
-        return new PreLoginFilter("/login");
+
+    class DefaultSecurityDsl extends AbstractHttpConfigurer<DefaultSecurityDsl, HttpSecurity> {
+
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+            http.addFilterBefore(new TokenAuthenticationFilter(authenticationManager), BasicAuthenticationFilter.class);
+            // 自定义json登陆必须要在bean中声明
+            http.addFilterBefore(new PreLoginFilter("/login"), UsernamePasswordAuthenticationFilter.class);
+            http.addFilterAt(usernamePasswordJsonAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+        }
+
     }
+
+//    public AuthenticationManager authenticationManager() throws Exception {
+//    }
+
+//    @Bean
+//    public PreLoginFilter preLoginFilter() {
+//        return new PreLoginFilter("/login");
+//    }
 
     public UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
         UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter =

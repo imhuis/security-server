@@ -19,12 +19,14 @@ import java.io.IOException;
 public class XssFilter implements Filter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {}
+    public void init(FilterConfig filterConfig) throws ServletException {
+        log.debug("[XssFilter] init.");
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        log.debug("XssFilter do.");
+        log.debug("[XssFilter] do.");
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
@@ -36,5 +38,7 @@ public class XssFilter implements Filter {
     }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+        log.debug("[XssFilter] destroy.");
+    }
 }

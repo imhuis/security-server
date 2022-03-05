@@ -4,7 +4,6 @@ import com.imhuis.security.common.constant.SecurityConstants;
 import com.imhuis.security.common.exception.CaptchaValidateException;
 import com.imhuis.security.common.util.JsonTools;
 import io.micrometer.core.instrument.util.IOUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +33,10 @@ import java.util.Objects;
  * @date: 2020/1/28
  * @description:
  */
-@Component
-@Slf4j
+//@Component
 public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImageCodeValidateFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(ImageCodeValidateFilter.class);
 
     private static final String CAPTCHA_VALUE = "captcha";
 
@@ -49,8 +47,8 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        logger.debug("[ImageCodeValidateFilter] request uri:{}", request.getRequestURI());
-        logger.debug("result:{}",StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name()));
+        log.debug("[ImageCodeValidateFilter] request uri:{}", request.getRequestURI());
+        log.debug("result:{}",StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name()));
         if (StringUtils.equalsIgnoreCase(LOGIN_URL, request.getRequestURI()) && StringUtils.equalsIgnoreCase(request.getMethod(), HttpMethod.POST.name())){
             ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
             try{

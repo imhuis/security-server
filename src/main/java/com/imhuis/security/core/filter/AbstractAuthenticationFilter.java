@@ -3,7 +3,8 @@ package com.imhuis.security.core.filter;
 import com.imhuis.security.common.base.ResponseResult;
 import com.imhuis.security.common.base.ResponseUtil;
 import com.imhuis.security.common.enums.ResponseCodeEnum;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,8 +28,9 @@ import static com.imhuis.security.common.constant.SecurityConstants.TOKEN_HEADER
  * @date: 2020/1/28
  * @description: filter request abstract
  */
-@Slf4j
 public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractAuthenticationFilter.class);
 
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
 

@@ -1,8 +1,9 @@
 package com.imhuis.security.core.filter;
 
 import com.imhuis.security.core.security.enums.LoginTypeEnum;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -21,8 +22,9 @@ import static org.springframework.security.web.authentication.UsernamePasswordAu
  * @date: 2022/3/3
  * @description: 预登录过滤器
  */
-@Slf4j
 public class PreLoginFilter extends GenericFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(PreLoginFilter.class);
 
     private static final String LOGIN_TYPE_KEY = "login_type";
 
@@ -66,6 +68,7 @@ public class PreLoginFilter extends GenericFilter {
 
     private static LoginProcessor defaultLoginProcessor() {
         return new LoginProcessor() {
+
             @Override
             public LoginTypeEnum getLoginType() {
                 return LoginTypeEnum.FORM;

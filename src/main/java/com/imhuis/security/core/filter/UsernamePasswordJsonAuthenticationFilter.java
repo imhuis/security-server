@@ -2,6 +2,8 @@ package com.imhuis.security.core.filter;
 
 import com.imhuis.security.common.util.JsonTools;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -22,8 +24,9 @@ import java.util.Map;
  * @date: 2022/1/14
  * @description:
  */
-@Slf4j
 public class UsernamePasswordJsonAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(UsernamePasswordJsonAuthenticationFilter.class);
 
     private String usernameField = "username";
     private String passwordField = "password";

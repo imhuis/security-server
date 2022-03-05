@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
  */
 public class TokenAuthenticationFilter extends AbstractAuthenticationFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 
     public TokenAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
