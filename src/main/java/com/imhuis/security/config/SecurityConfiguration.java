@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.authentication.configurers.ldap.LdapAuthenticationProviderConfigurer;
@@ -71,68 +72,49 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManagerBuilder builder) throws Exception {
-        AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver = request -> builder.getObject();
-        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http.authorizeRequests();
-        registry
-                .and()
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManagerBuilder builder) throws Exception {
+        builder.authenticationProvider(authenticationProvider());
+        builder.authenticationProvider(tokenAuthenticationProvider());
+        http
                 .csrf(CsrfConfigurer::disable)
-//                .disable()
-                .cors()
-                .and()
-                .authorizeRequests(authorize ->
-                        authorize.antMatchers("/login").permitAll()
-                                .antMatchers("/public/**").permitAll()
-                                .antMatchers(
-                                        "/*.html",
-                                        "/favicon.ico",
-                                        "/**/*.html",
-                                        "/**/*.css",
-                                        "/**/*.js",
-                                        "/h2-console/**").permitAll()
-                                .antMatchers("/actuator/**")
-                                .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
-                                .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
-                                .anyRequest().authenticated())
-//                .antMatchers("/login").permitAll()
-//                .antMatchers("/public/**").permitAll()
-//                .antMatchers(
-//                        "/*.html",
-//                        "/favicon.ico",
-//                        "/**/*.html",
-//                        "/**/*.css",
-//                        "/**/*.js",
-//                        "/h2-console/**").permitAll()
-//                .antMatchers("/actuator/**")
-//                .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
-//                .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
-//                .anyRequest().authenticated()
-//                .and()
-                .formLogin()
-                .loginProcessingUrl("/login")
-//                .usernameParameter("username").passwordParameter("password")
-                .permitAll()
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
-                .and()
-                .logout()
-                .permitAll()
-                .and()
-                .httpBasic()
-                .disable()
+                .cors(Customizer.withDefaults())
+                .authorizeRequests(authorize -> authorize
+                        .antMatchers("/login").permitAll()
+                        .antMatchers("/public/**").permitAll()
+                        .antMatchers(
+                                "/*.html",
+                                "/favicon.ico",
+                                "/**/*.html",
+                                "/**/*.css",
+                                "/**/*.js",
+                                "/h2-console/**").permitAll()
+                        .antMatchers("/actuator/**")
+                        .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
+                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
+                        .anyRequest().authenticated())
+                .formLogin(formLogin -> formLogin
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .permitAll()
+                        .successHandler(authenticationSuccessHandler)
+                        .failureHandler(authenticationFailureHandler))
+                .logout(logout -> logout.permitAll())
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
                 .and()
-                .sessionManagement(sessionManagement -> sessionManagement.maximumSessions(5))
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .maximumSessions(2))
 //                .expiredSessionStrategy()
         ;
         // 自定义Token认证
         http.addFilterBefore(new TokenAuthenticationFilter(builder.getObject()), BasicAuthenticationFilter.class);
         // 自定义json登陆必须要在bean中声明
         http.addFilterBefore(preLoginFilter(), UsernamePasswordAuthenticationFilter.class);
-//        http.addFilterAt(usernamePasswordJsonAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        return registry.and().build();
+        http.addFilterAt(usernamePasswordJsonAuthenticationFilter(builder.getObject()), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
 
     @Bean
@@ -140,14 +122,13 @@ public class SecurityConfiguration {
         return new PreLoginFilter("/login");
     }
 
-//    @Bean
-//    public UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter() throws Exception {
-//        UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter =
-//                new UsernamePasswordJsonAuthenticationFilter(authenticationManagerBean(), true);
-//        usernamePasswordJsonAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-//        usernamePasswordJsonAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-//        return usernamePasswordJsonAuthenticationFilter;
-//    }
+    public UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
+        UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter =
+                new UsernamePasswordJsonAuthenticationFilter(authenticationManager, true);
+        usernamePasswordJsonAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        usernamePasswordJsonAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        return usernamePasswordJsonAuthenticationFilter;
+    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

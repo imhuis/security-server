@@ -1,6 +1,7 @@
 package com.imhuis.security.core.filter;
 
 import com.imhuis.security.core.security.enums.LoginTypeEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -20,6 +21,7 @@ import static org.springframework.security.web.authentication.UsernamePasswordAu
  * @date: 2022/3/3
  * @description: 预登录过滤器
  */
+@Slf4j
 public class PreLoginFilter extends GenericFilter {
 
     private static final String LOGIN_TYPE_KEY = "login_type";
@@ -41,6 +43,7 @@ public class PreLoginFilter extends GenericFilter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        log.debug("PreLoginFilter do.");
         ParameterRequestWrapper requestWrapper = new ParameterRequestWrapper((HttpServletRequest) request);
         if (requestMatcher.matches((HttpServletRequest) request)) {
             LoginTypeEnum loginTypeEnum = getType(request);
