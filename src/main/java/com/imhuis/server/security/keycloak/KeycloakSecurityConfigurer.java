@@ -2,8 +2,8 @@ package com.imhuis.server.security.keycloak;
 
 import com.imhuis.server.security.provider.TokenAuthenticationProvider;
 import com.imhuis.server.security.filter.ImageCodeValidateFilter;
-import com.imhuis.server.handler.CustomizeAccessDeniedHandler;
-import com.imhuis.server.handler.CustomizeAuthenticationFailureHandler;
+import com.imhuis.server.security.handler.CustomizeAccessDeniedHandler;
+import com.imhuis.server.security.handler.CustomizeAuthenticationFailureHandler;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;

@@ -4,7 +4,7 @@ import com.imhuis.server.security.filter.PreLoginFilter;
 import com.imhuis.server.security.filter.TokenAuthenticationFilter;
 import com.imhuis.server.security.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.server.security.token.TokenAuthenticationProvider;
-import com.imhuis.server.handler.CustomizeAccessDeniedHandler;
+import com.imhuis.server.security.handler.CustomizeAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;

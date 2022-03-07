@@ -1,4 +1,4 @@
-package com.imhuis.server.handler;
+package com.imhuis.server.security.handler;
 
 import com.imhuis.server.common.base.ResponseResult;
 import com.imhuis.server.common.base.ResponseUtil;

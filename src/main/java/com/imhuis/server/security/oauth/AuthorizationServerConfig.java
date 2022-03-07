@@ -1,6 +1,6 @@
 package com.imhuis.server.security.oauth;
 
-import com.imhuis.server.handler.CustomizeAccessDeniedHandler;
+import com.imhuis.server.security.handler.CustomizeAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.HttpMethod;
