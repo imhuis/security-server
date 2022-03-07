@@ -45,9 +45,9 @@ public class PreLoginFilter extends GenericFilter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.debug("PreLoginFilter do.");
         ParameterRequestWrapper requestWrapper = new ParameterRequestWrapper((HttpServletRequest) request);
         if (requestMatcher.matches((HttpServletRequest) request)) {
+            log.debug("PreLoginFilter do.");
             LoginTypeEnum loginTypeEnum = getType(request);
             LoginProcessor processor = loginProcessorMap.get(loginTypeEnum);
             String username = processor.obtainUsername(request);

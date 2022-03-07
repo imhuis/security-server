@@ -1,7 +1,6 @@
 package com.imhuis.security.repository;
 
 import com.imhuis.security.domain.User;
-import com.imhuis.security.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

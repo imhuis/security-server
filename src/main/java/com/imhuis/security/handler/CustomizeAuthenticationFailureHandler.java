@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 登录失败处理器
  */
 @Component
 public class CustomizeAuthenticationFailureHandler implements AuthenticationFailureHandler {

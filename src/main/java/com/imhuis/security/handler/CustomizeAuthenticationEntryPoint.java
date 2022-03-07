@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 未登录处理器
  */
 @Component
 public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoint {

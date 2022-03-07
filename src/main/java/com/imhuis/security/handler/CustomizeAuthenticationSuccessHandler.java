@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 登录成功处理器
  */
 @Component
 public class CustomizeAuthenticationSuccessHandler implements AuthenticationSuccessHandler {

@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 基础entity
  */
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+public class OldBaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,8 @@ public class BaseEntity implements Serializable {
     }
 }
 
-class AuditMetaData {
+@Embeddable
+class OldAuditMetaData {
 
     @CreatedDate
     @Column(name = "create_time")

@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 无权限处理器
  */
 @Component
 public class CustomizeAccessDeniedHandler implements AccessDeniedHandler {

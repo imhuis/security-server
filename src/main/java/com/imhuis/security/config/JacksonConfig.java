@@ -13,7 +13,7 @@ import org.springframework.security.jackson2.CoreJackson2Module;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: jackson config
  */
 @Configuration
 public class JacksonConfig {

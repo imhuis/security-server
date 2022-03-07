@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -45,12 +46,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.List;
 
 /**
  * @author: imhuis
  * @date: 2022/3/4
- * @description:
+ * @description: security config
  */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
@@ -77,11 +79,13 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    @Order(1)
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .authenticationManager(authenticationManager())
+//                .authenticationManager()
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                .authenticationProvider(authenticationProvider())
                 .authorizeRequests(authorize -> authorize
                         .antMatchers("/login").permitAll()
                         .antMatchers("/public/**").permitAll()
@@ -113,27 +117,20 @@ public class SecurityConfiguration {
                         .sessionConcurrency(concurrency -> concurrency
                                 .maximumSessions(1))
                 )
+                .headers(headersCustomizer -> headersCustomizer
+                        .addHeaderWriter((request, response) -> response.setHeader("ts", Instant.now().toString())))
 //                .expiredSessionStrategy()
-        .apply(new DefaultSecurityDsl())
-        ;
-        // 自定义Token认证
-//        http.addFilterBefore(new TokenAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class);
-//        // 自定义json登陆必须要在bean中声明
-//        http.addFilterBefore(preLoginFilter(), UsernamePasswordAuthenticationFilter.class);
-//        http.addFilterAt(usernamePasswordJsonAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        .apply(new DefaultSecurityDsl());
         return http.build();
     }
 
-
     class DefaultSecurityDsl extends AbstractHttpConfigurer<DefaultSecurityDsl, HttpSecurity> {
-
         @Override
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http.addFilterBefore(new TokenAuthenticationFilter(authenticationManager), BasicAuthenticationFilter.class);
-            // 自定义json登陆必须要在bean中声明
             http.addFilterBefore(new PreLoginFilter("/login"), UsernamePasswordAuthenticationFilter.class);
-            http.addFilterAt(usernamePasswordJsonAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+//            http.addFilterAt(usernamePasswordJsonAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
         }
 
     }
@@ -154,7 +151,7 @@ public class SecurityConfiguration {
         return usernamePasswordJsonAuthenticationFilter;
     }
 
-    @Bean
+//    @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);

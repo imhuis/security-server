@@ -40,18 +40,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (new EmailValidator().isValid(s, null)){
             return userDao.findUserByEmail(s)
                     .map(user -> createSpringSecurityUser(s, user))
-                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + s + "was not found"));
+                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + s + " was not found"));
         }
         // 手机号
         if (Character.isDigit(s.charAt(0))){
             return userDao.findUserByPhone(s)
                     .map(user -> createSpringSecurityUser(s, user))
-                    .orElseThrow(() -> new UsernameNotFoundException("User with phone " + s + "was not found"));
+                    .orElseThrow(() -> new UsernameNotFoundException("User with phone " + s + " was not found"));
         }
         // 用户名
         return userDao.findUserByUserName(s)
                 .map(user -> createSpringSecurityUser(s, user))
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + s + "was not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with username " + s + " was not found"));
     }
 
     private User createSpringSecurityUser(String login, com.imhuis.security.domain.User user){
