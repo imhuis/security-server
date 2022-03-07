@@ -29,7 +29,7 @@ dubbo:
     retries: 1
 logging:
   level:
-    root: DEBUG
+#    root: DEBUG
     com:
       imhuis:
         security: DEBUG

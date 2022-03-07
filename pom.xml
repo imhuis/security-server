@@ -8,7 +8,7 @@
         <version>2.6.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.imhuis</groupId>
+    <groupId>com.imhuis.server</groupId>
     <artifactId>security</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>security-server</name>
@@ -238,7 +238,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.imhuis.security.SecurityServerApplication</mainClass>
+                    <mainClass>com.imhuis.server.SecurityServerApplication</mainClass>
                     <layers>
                         <enabled>true</enabled>
                     </layers>
@@ -339,7 +339,7 @@
                         <image>imhui.org/imhuis/${project.artifactId}</image>
                     </to>
                     <container>
-                        <mainClass>com.imhuis.security.SecurityServerApplication</mainClass>
+                        <mainClass>com.imhuis.server.SecurityServerApplication</mainClass>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                     </container>
 
