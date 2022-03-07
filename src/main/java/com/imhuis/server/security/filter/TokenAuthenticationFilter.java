@@ -1,4 +1,4 @@
-package com.imhuis.server.core.filter;
+package com.imhuis.server.security.filter;
 
 import com.imhuis.server.security.token.TokenAuthenticationToken;
 import org.slf4j.Logger;

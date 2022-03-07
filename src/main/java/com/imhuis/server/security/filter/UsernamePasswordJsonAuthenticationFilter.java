@@ -1,4 +1,4 @@
-package com.imhuis.server.core.filter;
+package com.imhuis.server.security.filter;
 
 import com.imhuis.server.common.util.JsonTools;
 import org.slf4j.Logger;

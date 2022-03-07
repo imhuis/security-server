@@ -1,4 +1,4 @@
-package com.imhuis.server.core.filter;
+package com.imhuis.server.security.filter;
 
 import com.imhuis.server.common.base.ResponseResult;
 import com.imhuis.server.common.base.ResponseUtil;

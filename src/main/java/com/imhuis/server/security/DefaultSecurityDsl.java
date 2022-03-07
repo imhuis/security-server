@@ -1,7 +1,7 @@
 package com.imhuis.server.security;
 
-import com.imhuis.server.core.filter.TokenAuthenticationFilter;
-import com.imhuis.server.core.filter.UsernamePasswordJsonAuthenticationFilter;
+import com.imhuis.server.security.filter.TokenAuthenticationFilter;
+import com.imhuis.server.security.filter.UsernamePasswordJsonAuthenticationFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;

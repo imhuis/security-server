@@ -1,6 +1,6 @@
-package com.imhuis.server.core.filter.processor;
+package com.imhuis.server.security.filter.processor;
 
-import com.imhuis.server.core.filter.LoginProcessor;
+import com.imhuis.server.security.filter.LoginProcessor;
 import com.imhuis.server.security.enums.LoginTypeEnum;
 
 import javax.servlet.ServletRequest;
@@ -13,11 +13,11 @@ import static org.springframework.security.web.authentication.UsernamePasswordAu
  * @date: 2022/3/4
  * @description:
  */
-public class JsonLoginProcessor implements LoginProcessor {
+public class CaptchaLoginProcessor implements LoginProcessor {
 
     @Override
     public LoginTypeEnum getLoginType() {
-        return LoginTypeEnum.JSON;
+        return LoginTypeEnum.CAPTCHA;
     }
 
     @Override
