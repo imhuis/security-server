@@ -5,15 +5,21 @@ import com.imhuis.server.security.filter.TokenAuthenticationFilter;
 import com.imhuis.server.security.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.server.security.token.TokenAuthenticationProvider;
 import com.imhuis.server.security.handler.CustomizeAccessDeniedHandler;
+import com.imhuis.server.web.controller.PublicController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -81,7 +87,7 @@ public class SecurityConfiguration {
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
 //                .authenticationManager()
-                .authenticationProvider(authenticationProvider())
+                .authenticationProvider(daoAuthenticationProvider())
                 .authenticationProvider(tokenAuthenticationProvider())
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
@@ -161,7 +167,7 @@ public class SecurityConfiguration {
     }
 
 //    @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -200,6 +206,12 @@ public class SecurityConfiguration {
 
     public RoleVoter roleVoter() {
         return new RoleVoter();
+    }
+
+    @Bean
+    public AuthenticationEventPublisher authenticationEventPublisher
+            (ApplicationEventPublisher applicationEventPublisher) {
+        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
     }
 
 }

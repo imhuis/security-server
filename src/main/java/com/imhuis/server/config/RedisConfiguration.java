@@ -5,6 +5,8 @@ import io.lettuce.core.SocketOptions;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -26,7 +28,7 @@ import java.time.Duration;
 public class RedisConfiguration {
 
     @Bean(destroyMethod = "destroy")
-    public LettuceConnectionFactory lettuceConnectionFactory(){
+    public LettuceConnectionFactory defaultConnectionFactory(){
 //        RedisClusterConfiguration redisClusterConnection = new RedisClusterConfiguration();
 //        redisClusterConnection.addClusterNode(new RedisNode("redis1",26379));
 //        redisClusterConnection.addClusterNode(new RedisNode("redis2",26379));
@@ -67,12 +69,25 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisTemplate redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
+    public RedisTemplate redisTemplate(@Qualifier("defaultConnectionFactory") LettuceConnectionFactory lettuceConnectionFactory) {
         RedisTemplate redisTemplate = new RedisTemplate();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory);
         RedisSerializer stringSerializer = new StringRedisSerializer();
         redisTemplate.setKeySerializer(stringSerializer);
         return redisTemplate;
+    }
+
+//    @Bean
+    public RedisStandaloneConfiguration redisStandaloneConfiguration_2(@Value("${spring.redis-db-2.host}") String hostname,
+                                                                       @Value("${spring.redis-db-2.password}") String password,
+                                                                       @Value("${spring.redis-db-2.port}") int port,
+                                                                       @Value("${spring.redis-db-2.database}") int database) {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(hostname);
+        redisStandaloneConfiguration.setPassword(password);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(database);
+        return redisStandaloneConfiguration;
     }
 
 }

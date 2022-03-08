@@ -15,7 +15,7 @@ public class SecurityUtil {
     public static final String getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
-            return "";
+            return "anonymous";
         }
         UserDetails principal = (UserDetails) authentication.getPrincipal();
         return principal.getUsername();

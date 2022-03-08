@@ -26,6 +26,12 @@ public class CustomizeFilterInvocationSecurityMetadataSource implements FilterIn
 
     private static Map<String, Collection<ConfigAttribute>> configAttributes = new ConcurrentHashMap<>();
 
+    /**
+     * 获取受保护对象信息
+     * @param object
+     * @return
+     * @throws IllegalArgumentException
+     */
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         if (configAttributes == null) {
@@ -42,6 +48,10 @@ public class CustomizeFilterInvocationSecurityMetadataSource implements FilterIn
         return null;
     }
 
+    /**
+     * 获取全部角色
+     * @return
+     */
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
         return null;
