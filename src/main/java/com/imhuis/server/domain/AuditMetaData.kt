@@ -1,5 +1,6 @@
 package com.imhuis.server.domain
 
+import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
@@ -16,8 +17,9 @@ class AuditMetaData {
     @CreatedDate
     var createTime: LocalDateTime? = null
 
-    //    @CreatedBy
-    //    private Long createBy;
+    @CreatedBy
+    var createBy: String? = null
+
     @LastModifiedDate
     var updateTime: LocalDateTime? = null
 }

@@ -18,6 +18,7 @@ open class BaseEntity : Serializable {
     @Embedded
     @AttributeOverrides(
         AttributeOverride(name = "createTime", column = Column(name = "create_time")),
+        AttributeOverride(name = "createBy", column = Column(name = "create_by")),
         AttributeOverride(name = "updateTime", column = Column(name = "update_time"))
     )
     var auditMetaData: AuditMetaData? = null

@@ -1,7 +1,11 @@
 package com.imhuis.server.config;
 
+import com.imhuis.server.core.jpa.AuditorAwareImpl;
+import com.imhuis.server.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -27,25 +31,28 @@ public class JpaConfig {
     @Autowired
     private DataSource dataSource;
 
-//    @Bean
+    @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setDatabase(Database.MYSQL);
-//        vendorAdapter.setGenerateDdl(true);
+        vendorAdapter.setGenerateDdl(false);
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-//        factory.setPackagesToScan(Message.class.getPackage().getName());
+        factory.setPackagesToScan("com.imhuis.server.domain");
         factory.setDataSource(dataSource);
-
         return factory;
     }
 
-//    @Bean
+    @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return txManager;
+    }
+
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return new AuditorAwareImpl();
     }
 
 }
