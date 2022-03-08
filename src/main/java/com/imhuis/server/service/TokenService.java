@@ -1,8 +1,8 @@
 package com.imhuis.server.service;
 
-import com.imhuis.server.security.bo.LoginDetails;
-import com.imhuis.server.security.bo.SecurityUser;
-import com.imhuis.server.security.bo.TokenInfo;
+import com.imhuis.server.domain.securitybo.LoginDetails;
+import com.imhuis.server.domain.securitybo.SecurityUser;
+import com.imhuis.server.domain.securitybo.TokenInfo;
 
 /**
  * @author: imhuis

@@ -1,4 +1,4 @@
-package com.imhuis.server.security.enums;
+package com.imhuis.server.common.enums;
 
 /**
  * @author: imhuis

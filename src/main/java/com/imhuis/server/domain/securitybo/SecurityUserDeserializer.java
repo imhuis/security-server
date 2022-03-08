@@ -1,4 +1,4 @@
-package com.imhuis.server.security.bo;
+package com.imhuis.server.domain.securitybo;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

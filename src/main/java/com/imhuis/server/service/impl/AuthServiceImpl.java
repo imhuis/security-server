@@ -1,6 +1,6 @@
 package com.imhuis.server.service.impl;
 
-import com.imhuis.server.security.bo.SecurityUser;
+import com.imhuis.server.domain.securitybo.SecurityUser;
 import com.imhuis.server.service.AuthService;
 import org.springframework.stereotype.Service;
 

@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author: imhuis
  * @date: 2022/3/8
- * @description:
+ * @description: 自定义权限数据源
  */
 @Component
 public class CustomizeFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {

@@ -2,8 +2,8 @@ package com.imhuis.server.security.handler;
 
 import com.imhuis.server.common.base.ResponseResult;
 import com.imhuis.server.common.base.ResponseUtil;
-import com.imhuis.server.security.bo.LoginDetails;
-import com.imhuis.server.security.bo.TokenInfo;
+import com.imhuis.server.domain.securitybo.LoginDetails;
+import com.imhuis.server.domain.securitybo.TokenInfo;
 import com.imhuis.server.service.AuthService;
 import com.imhuis.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;

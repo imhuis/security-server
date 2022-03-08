@@ -1,6 +1,5 @@
 package com.imhuis.server.security.access;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
@@ -13,7 +12,7 @@ import java.io.IOException;
 /**
  * @author: imhuis
  * @date: 2022/3/7
- * @description:
+ * @description: 自定义权限拦截器
  */
 public class CustomizeFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 

@@ -2,7 +2,7 @@ package com.imhuis.server.security.filter;
 
 import com.imhuis.server.security.filter.processor.CaptchaLoginProcessor;
 import com.imhuis.server.security.filter.processor.JsonLoginProcessor;
-import com.imhuis.server.security.enums.LoginTypeEnum;
+import com.imhuis.server.common.enums.LoginTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;

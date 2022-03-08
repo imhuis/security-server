@@ -1,7 +1,7 @@
 package com.imhuis.server.security.filter.processor;
 
 import com.imhuis.server.security.filter.LoginProcessor;
-import com.imhuis.server.security.enums.LoginTypeEnum;
+import com.imhuis.server.common.enums.LoginTypeEnum;
 
 import javax.servlet.ServletRequest;
 

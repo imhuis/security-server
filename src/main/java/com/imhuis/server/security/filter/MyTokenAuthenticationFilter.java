@@ -2,7 +2,7 @@ package com.imhuis.server.security.filter;
 
 import com.google.common.base.Strings;
 import com.imhuis.server.common.constant.SecurityConstants;
-import com.imhuis.server.security.bo.TokenAuthentication;
+import com.imhuis.server.domain.securitybo.TokenAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,9 +1,9 @@
 package com.imhuis.server.service.impl;
 
 import com.imhuis.server.common.util.TokenUtil;
-import com.imhuis.server.security.bo.LoginDetails;
-import com.imhuis.server.security.bo.SecurityUser;
-import com.imhuis.server.security.bo.TokenInfo;
+import com.imhuis.server.domain.securitybo.LoginDetails;
+import com.imhuis.server.domain.securitybo.SecurityUser;
+import com.imhuis.server.domain.securitybo.TokenInfo;
 import com.imhuis.server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;

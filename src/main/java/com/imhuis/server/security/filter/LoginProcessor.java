@@ -1,6 +1,6 @@
 package com.imhuis.server.security.filter;
 
-import com.imhuis.server.security.enums.LoginTypeEnum;
+import com.imhuis.server.common.enums.LoginTypeEnum;
 
 import javax.servlet.ServletRequest;
 

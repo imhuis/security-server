@@ -1,7 +1,7 @@
 package com.imhuis.server.security;
 
 import com.imhuis.server.common.exception.CustomizeException;
-import com.imhuis.server.security.bo.SecurityUser;
+import com.imhuis.server.domain.securitybo.SecurityUser;
 import com.imhuis.server.repository.UserDao;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
@@ -23,7 +23,7 @@ import java.util.*;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
     private UserDao userDao;
 
@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        logger.info("loadUserByUsername -- userDetail:{}", s);
+        log.info("loadUserByUsername -- userDetail:{}", s);
         // 邮箱
         if (new EmailValidator().isValid(s, null)){
             return userDao.findUserByEmail(s)
@@ -67,8 +67,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //        List<GrantedAuthority> grantedAuthorities = authorityString
 //                .stream().map(authority -> new SimpleGrantedAuthority(authority))
 //                .collect(Collectors.toList());
-        logger.info("find user [{}]", login);
-        logger.info("user info \n userid:{}", user.getUserId());
+        log.info("find user [{}]", login);
+        log.info("user info \n userid:{}", user.getUserId());
         return new SecurityUser(user.getUserName(), user.getPassword(), Collections.emptyList(),
                 user.getUserId(), phone, email);
     }

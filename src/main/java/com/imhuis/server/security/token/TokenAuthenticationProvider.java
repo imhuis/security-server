@@ -1,6 +1,6 @@
 package com.imhuis.server.security.token;
 
-import com.imhuis.server.security.bo.SecurityUser;
+import com.imhuis.server.domain.securitybo.SecurityUser;
 import com.imhuis.server.service.AuthService;
 import com.imhuis.server.service.TokenService;
 import lombok.extern.log4j.Log4j2;

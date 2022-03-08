@@ -14,7 +14,7 @@ import java.util.Iterator;
 /**
  * @author: imhuis
  * @date: 2022/3/8
- * @description:
+ * @description: 自定义决策管理器
  */
 @Component
 public class CustomizeAccessDecisionManager implements AccessDecisionManager {

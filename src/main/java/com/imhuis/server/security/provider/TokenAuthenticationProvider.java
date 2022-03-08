@@ -1,7 +1,7 @@
 package com.imhuis.server.security.provider;
 
-import com.imhuis.server.security.bo.TokenAuthentication;
-import com.imhuis.server.security.bo.TokenInfo;
+import com.imhuis.server.domain.securitybo.TokenAuthentication;
+import com.imhuis.server.domain.securitybo.TokenInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

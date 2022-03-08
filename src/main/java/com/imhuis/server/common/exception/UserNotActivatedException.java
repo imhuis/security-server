@@ -5,7 +5,7 @@ import javax.naming.AuthenticationException;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 用户未激活异常
  */
 public class UserNotActivatedException extends AuthenticationException {
 

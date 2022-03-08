@@ -1,4 +1,4 @@
-package com.imhuis.server.security.bo
+package com.imhuis.server.domain.securitybo
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User

@@ -20,7 +20,7 @@ import java.time.Duration;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: redis配置,目前单机
  */
 @Configuration
 public class RedisConfiguration {

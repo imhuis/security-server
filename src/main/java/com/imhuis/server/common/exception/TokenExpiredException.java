@@ -5,7 +5,7 @@ import org.springframework.security.core.AuthenticationException;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: token过期异常
  */
 public class TokenExpiredException extends AuthenticationException {
 
