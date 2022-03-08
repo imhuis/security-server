@@ -1,5 +1,6 @@
 package com.imhuis.server.security;
 
+import com.imhuis.server.security.access.CustomizeFilterSecurityInterceptor;
 import com.imhuis.server.security.filter.TokenAuthenticationFilter;
 import com.imhuis.server.security.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.server.security.token.TokenAuthenticationProvider;
@@ -9,6 +10,8 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointR
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -60,6 +64,12 @@ public class SecurityConfiguration {
 
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
+    private AccessDecisionManager accessDecisionManager;
+
+    @Autowired
+    private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -123,6 +133,13 @@ public class SecurityConfiguration {
         }
     }
 
+    @Bean
+    public CustomizeFilterSecurityInterceptor customizeFilterSecurityInterceptor() {
+        CustomizeFilterSecurityInterceptor filterSecurityInterceptor = new CustomizeFilterSecurityInterceptor(filterInvocationSecurityMetadataSource);
+        filterSecurityInterceptor.setAccessDecisionManager(accessDecisionManager);
+        return filterSecurityInterceptor;
+    }
+
 //    @Bean
 //    public AuthenticationManager authenticationManager() throws Exception {
 //        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
@@ -179,6 +196,10 @@ public class SecurityConfiguration {
         DefaultHttpFirewall httpFirewall = new DefaultHttpFirewall();
         httpFirewall.setAllowUrlEncodedSlash(true);
         return httpFirewall;
+    }
+
+    public RoleVoter roleVoter() {
+        return new RoleVoter();
     }
 
 }

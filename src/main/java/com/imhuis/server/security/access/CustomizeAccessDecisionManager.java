@@ -6,6 +6,7 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import java.util.Iterator;
  * @date: 2022/3/8
  * @description:
  */
+@Component
 public class CustomizeAccessDecisionManager implements AccessDecisionManager {
 
     @Override

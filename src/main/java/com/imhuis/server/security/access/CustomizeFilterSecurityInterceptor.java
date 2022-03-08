@@ -1,4 +1,4 @@
-package com.imhuis.server.security.filter;
+package com.imhuis.server.security.access;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;
@@ -17,8 +17,11 @@ import java.io.IOException;
  */
 public class CustomizeFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 
-    @Autowired
     private FilterInvocationSecurityMetadataSource securityMetadataSource;
+
+    public CustomizeFilterSecurityInterceptor(FilterInvocationSecurityMetadataSource securityMetadataSource) {
+        this.securityMetadataSource = securityMetadataSource;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
 
 import java.util.Collection;
@@ -17,7 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date: 2022/3/8
  * @description:
  */
-public class CustomizeSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
+@Component
+public class CustomizeFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     @Autowired
     private PathMatcher pathMatcher;
@@ -42,11 +44,11 @@ public class CustomizeSecurityMetadataSource implements FilterInvocationSecurity
 
     @Override
     public Collection<ConfigAttribute> getAllConfigAttributes() {
-            return null;
+        return null;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return true;
+        return FilterInvocation.class.isAssignableFrom(clazz);
     }
 }
