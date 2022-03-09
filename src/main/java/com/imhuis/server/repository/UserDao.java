@@ -10,7 +10,7 @@ import java.util.Optional;
  * @date: 2021/9/1
  * @description:
  */
-public interface UserDao extends JpaRepository<User,Long> {
+public interface UserDao extends JpaRepository<User, Long> {
 
     Optional<User> findUserById(Long id);
 

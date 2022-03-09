@@ -9,7 +9,7 @@ import javax.persistence.Embeddable
 /**
  * @author: imhuis
  * @date: 2022/3/5
- * @description:
+ * @description: audit meta(审计信息)
  */
 @Embeddable
 class AuditMetaData {

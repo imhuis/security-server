@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AppController {
 
-    @RequestMapping("/app/hello")
+    @RequestMapping("/api/hello")
     public ResponseResult hello(){
         return ResponseUtil.success("Hello, this is app");
     }

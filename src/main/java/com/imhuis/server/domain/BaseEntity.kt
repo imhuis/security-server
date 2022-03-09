@@ -13,7 +13,7 @@ open class BaseEntity : Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    open var id: Long? = null
 
     @Embedded
     @AttributeOverrides(
@@ -21,5 +21,5 @@ open class BaseEntity : Serializable {
         AttributeOverride(name = "createBy", column = Column(name = "create_by")),
         AttributeOverride(name = "updateTime", column = Column(name = "update_time"))
     )
-    var auditMetaData: AuditMetaData? = null
+    open var auditMetaData: AuditMetaData? = null
 }

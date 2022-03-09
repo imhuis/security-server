@@ -1,6 +1,7 @@
 package com.imhuis.server.security;
 
 import com.imhuis.server.security.access.CustomizeFilterSecurityInterceptor;
+import com.imhuis.server.security.filter.PreLoginFilter;
 import com.imhuis.server.security.filter.TokenAuthenticationFilter;
 import com.imhuis.server.security.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.server.security.token.TokenAuthenticationProvider;
@@ -21,6 +22,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
+import org.springframework.security.authorization.AuthorityAuthorizationManager;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,21 +34,32 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.access.intercept.RequestMatcherDelegatingAuthorizationManager;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.List;
 
@@ -84,35 +100,47 @@ public class SecurityConfiguration {
 
     @Bean
     @Order(1)
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http, AuthorizationManager<RequestAuthorizationContext> access) throws Exception {
         http
-//                .authenticationManager()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authenticationProvider(tokenAuthenticationProvider())
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers("/login").permitAll()
-                        .antMatchers("/public/**").permitAll()
-                        .antMatchers(
-                                "/*.html",
-                                "/favicon.ico",
-                                "/**/*.html",
-                                "/**/*.css",
-                                "/**/*.js",
-                                "/h2-console/**").permitAll()
-                        .antMatchers("/actuator/**")
-                        .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
-                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
-                        .anyRequest().authenticated())
+//                .authorizeRequests(authorizeRequests -> authorizeRequests
+//                        .antMatchers(
+//                                "/*.html",
+//                                "/favicon.ico",
+//                                "/**/*.html",
+//                                "/**/*.css",
+//                                "/**/*.js",
+//                                "/h2-console/**").permitAll()
+//                        .antMatchers("/actuator/**")
+//                        .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
+//                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
+//                        .antMatchers("/login").permitAll()
+//                        .antMatchers("/public/**").permitAll()
+//                )
+                .authorizeHttpRequests(authorize -> authorize
+//                        .mvcMatchers(
+//                                "/*.html",
+//                                "/favicon.ico",
+//                                "/**/*.html",
+//                                "/**/*.css",
+//                                "/**/*.js",
+//                                "/h2-console/**").permitAll()
+//                        .antMatchers("/actuator/**").access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
+//                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
+//                        .mvcMatchers("/public/**").permitAll()
+                        .anyRequest().access(access)
+                )
                 .formLogin(formLogin -> formLogin
                         .loginProcessingUrl("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .permitAll()
+//                        .permitAll()
                         .successHandler(authenticationSuccessHandler)
                         .failureHandler(authenticationFailureHandler))
-                .logout(LogoutConfigurer::permitAll)
+//                .logout(LogoutConfigurer::permitAll)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
@@ -125,7 +153,8 @@ public class SecurityConfiguration {
                 .headers(headersCustomizer -> headersCustomizer
                         .addHeaderWriter((request, response) -> response.setHeader("timestamp", Instant.now().toString())))
 //                .expiredSessionStrategy()
-        .apply(new DefaultSecurityDsl());
+//        .apply(new DefaultSecurityDsl())
+        ;
         return http.build();
     }
 
@@ -134,9 +163,28 @@ public class SecurityConfiguration {
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http.addFilterBefore(new TokenAuthenticationFilter(authenticationManager), BasicAuthenticationFilter.class);
-//            http.addFilterBefore(new PreLoginFilter("/login"), UsernamePasswordAuthenticationFilter.class);
-//            http.addFilterBefore(usernamePasswordJsonAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
+            http.addFilterBefore(new PreLoginFilter("/login"), UsernamePasswordAuthenticationFilter.class);
+            http.addFilterAt(usernamePasswordJsonAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
         }
+    }
+
+    @Bean
+    AuthorizationManager<RequestAuthorizationContext> requestMatcherAuthorizationManager(HandlerMappingIntrospector introspector) {
+        RequestMatcher permitAll = new AndRequestMatcher(
+                new MvcRequestMatcher(introspector, "/resources/**"),
+//                new MvcRequestMatcher(introspector, "/**/*.html"),
+                new MvcRequestMatcher(introspector, "/about"));
+        RequestMatcher admin = new MvcRequestMatcher(introspector, "/sys/**");
+        RequestMatcher api = new MvcRequestMatcher(introspector, "/api/**");
+        RequestMatcher any = AnyRequestMatcher.INSTANCE;
+        RequestMatcher others = new AntPathRequestMatcher("/**");
+        AuthorizationManager<HttpServletRequest> authz = RequestMatcherDelegatingAuthorizationManager.builder()
+                .add(permitAll, (context, obj) -> new AuthorizationDecision(true))
+                .add(admin, AuthorityAuthorizationManager.hasRole("ADMIN"))
+                .add(api, AuthorityAuthorizationManager.hasRole("API"))
+                .add(any, new AuthenticatedAuthorizationManager())
+                .build();
+        return (authentication, context) -> authz.check(authentication, context.getRequest());
     }
 
     @Bean
