@@ -14,7 +14,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
@@ -28,6 +30,7 @@ import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.AbstractRequestMatcherRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -116,7 +119,7 @@ public class SecurityConfiguration {
 //                                "/h2-console/**").permitAll()
 //                        .antMatchers("/actuator/**").access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
 //                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
-//                        .mvcMatchers("/public/**").permitAll()
+                        .mvcMatchers("/public/**").permitAll()
                         .anyRequest().access(access)
                 )
                 .formLogin(formLogin -> formLogin
@@ -138,7 +141,6 @@ public class SecurityConfiguration {
                 )
                 .headers(headersCustomizer -> headersCustomizer
                         .addHeaderWriter((request, response) -> response.setHeader("timestamp", Instant.now().toString())))
-//                .expiredSessionStrategy()
 //        .apply(new DefaultSecurityDsl())
         ;
         return http.build();
@@ -157,15 +159,18 @@ public class SecurityConfiguration {
     @Bean
     AuthorizationManager<RequestAuthorizationContext> requestMatcherAuthorizationManager(HandlerMappingIntrospector introspector) {
         RequestMatcher permitAll = new AndRequestMatcher(
-                new MvcRequestMatcher(introspector, "/resources/**"),
-//                new MvcRequestMatcher(introspector, "/**/*.html"),
-                new MvcRequestMatcher(introspector, "/about"));
-        RequestMatcher admin = new MvcRequestMatcher(introspector, "/sys/**");
+                new AntPathRequestMatcher("/**/*.html"),
+                new AntPathRequestMatcher("/**/*.css"),
+                new AntPathRequestMatcher("/**/*.js"),
+                new AntPathRequestMatcher("/favicon.ico"),
+                new AntPathRequestMatcher("/*.html"));
+        RequestMatcher admin = new AndRequestMatcher(
+                new MvcRequestMatcher(introspector, "/sys/**"),
+                new MvcRequestMatcher(introspector, "/admin/**"));
         RequestMatcher api = new MvcRequestMatcher(introspector, "/api/**");
         RequestMatcher any = AnyRequestMatcher.INSTANCE;
-        RequestMatcher others = new AntPathRequestMatcher("/**");
         AuthorizationManager<HttpServletRequest> authz = RequestMatcherDelegatingAuthorizationManager.builder()
-                .add(permitAll, (context, obj) -> new AuthorizationDecision(true))
+                .add(permitAll, (authentication, obj) -> new AuthorizationDecision(true))
                 .add(admin, AuthorityAuthorizationManager.hasRole("admin"))
                 .add(api, AuthorityAuthorizationManager.hasRole("api"))
                 .add(any, new AuthenticatedAuthorizationManager())
@@ -238,8 +243,13 @@ public class SecurityConfiguration {
         return httpFirewall;
     }
 
-    public RoleVoter roleVoter() {
-        return new RoleVoter();
+//    @Bean
+    AccessDecisionVoter hierarchyVoter() {
+        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_STAFF\n" +
+                "ROLE_STAFF > ROLE_USER\n" +
+                "ROLE_USER > ROLE_GUEST");
+        return new RoleHierarchyVoter(hierarchy);
     }
 
     @Bean
