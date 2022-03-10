@@ -1,6 +1,7 @@
-package com.imhuis.server.domain;
+package com.imhuis.server.domain.security;
 
 import com.imhuis.server.common.enums.State;
+import com.imhuis.server.domain.BaseEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;

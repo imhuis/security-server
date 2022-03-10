@@ -1,8 +1,9 @@
 package com.imhuis.server.service;
 
-import com.imhuis.server.domain.UserRole;
+import com.imhuis.server.domain.security.UserRole;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author: imhuis
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public interface UserRoleService {
 
-    List<String> getUserRolesString(Long userId);
+    Set<String> getUserRolesString(Long userId);
 
     List<UserRole> getUserRoles();
 }

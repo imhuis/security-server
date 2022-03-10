@@ -1,5 +1,6 @@
-package com.imhuis.server.domain
+package com.imhuis.server.domain.security
 
+import com.imhuis.server.domain.BaseEntity
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Entity

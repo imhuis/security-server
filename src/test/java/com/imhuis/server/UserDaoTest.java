@@ -1,6 +1,6 @@
 package com.imhuis.server;
 
-import com.imhuis.server.domain.User;
+import com.imhuis.server.domain.security.User;
 import com.imhuis.server.repository.UserDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

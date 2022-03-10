@@ -7,12 +7,15 @@ import java.io.Serializable
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 自定义User类，继承UserDetails
  */
 class SecurityUser : User, Serializable {
 
+    // uid - 用户id
     var uid: String
+    // 手机号
     var phone: String
+    // 邮箱
     var email: String
 
     constructor(

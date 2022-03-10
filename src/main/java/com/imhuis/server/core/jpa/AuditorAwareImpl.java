@@ -1,13 +1,12 @@
 package com.imhuis.server.core.jpa;
 
-import com.imhuis.server.domain.User;
+import com.imhuis.server.domain.security.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 

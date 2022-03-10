@@ -1,6 +1,6 @@
 package com.imhuis.server.repository;
 
-import com.imhuis.server.domain.Role;
+import com.imhuis.server.domain.security.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

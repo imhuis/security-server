@@ -1,10 +1,8 @@
 package com.imhuis.server.repository;
 
-import com.imhuis.server.domain.UserRole;
-import com.imhuis.server.domain.UserRoleKey;
+import com.imhuis.server.domain.security.UserRole;
+import com.imhuis.server.domain.security.UserRoleKey;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 /**
  * @author: imhuis

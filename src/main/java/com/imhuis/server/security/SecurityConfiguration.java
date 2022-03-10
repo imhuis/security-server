@@ -106,20 +106,6 @@ public class SecurityConfiguration {
                 .authenticationProvider(tokenAuthenticationProvider())
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
-//                .authorizeRequests(authorizeRequests -> authorizeRequests
-//                        .antMatchers(
-//                                "/*.html",
-//                                "/favicon.ico",
-//                                "/**/*.html",
-//                                "/**/*.css",
-//                                "/**/*.js",
-//                                "/h2-console/**").permitAll()
-//                        .antMatchers("/actuator/**")
-//                        .access("hasIpAddress('127.0.0.0/8') or hasIpAddress('192.168.0.0/16')")
-//                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).hasIpAddress("192.168.0.0/16")
-//                        .antMatchers("/login").permitAll()
-//                        .antMatchers("/public/**").permitAll()
-//                )
                 .authorizeHttpRequests(authorize -> authorize
 //                        .mvcMatchers(
 //                                "/*.html",

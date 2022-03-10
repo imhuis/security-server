@@ -1,20 +1,14 @@
 package com.imhuis.server.security;
 
 import com.imhuis.server.common.exception.CustomizeException;
-import com.imhuis.server.common.exception.UserNotActivatedException;
-import com.imhuis.server.domain.UserRole;
 import com.imhuis.server.domain.securitybo.SecurityUser;
-import com.imhuis.server.repository.UserDao;
-import com.imhuis.server.repository.UserRoleDao;
 import com.imhuis.server.service.UserRoleService;
 import com.imhuis.server.service.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -64,12 +58,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with username " + s + " was not found"));
     }
 
-    private User createSpringSecurityUser(String login, com.imhuis.server.domain.User user){
+    private User createSpringSecurityUser(String login, com.imhuis.server.domain.security.User user){
         String userId = Optional.ofNullable(user.getUserId())
                 .orElseThrow(() -> new CustomizeException("uid undefined"));
         String phone = Optional.ofNullable(user.getPhone()).orElseGet(() -> "undefined");
         String email = Optional.ofNullable(user.getEmail()).orElseGet(() -> "undefined");
-        List<String> userRolesStringList = userRoleService.getUserRolesString(user.getId());
+        Set<String> userRolesStringList = userRoleService.getUserRolesString(user.getId());
         String authorityString = userRolesStringList.stream().collect(Collectors.joining(","));
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authorityString);
 //        List<? extends GrantedAuthority> grantedAuthorities = authorityString

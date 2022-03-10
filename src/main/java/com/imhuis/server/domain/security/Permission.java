@@ -1,4 +1,4 @@
-package com.imhuis.server.domain;
+package com.imhuis.server.domain.security;
 
 /**
  * @author: imhuis

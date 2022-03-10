@@ -1,6 +1,6 @@
 package com.imhuis.server.service.impl;
 
-import com.imhuis.server.domain.User;
+import com.imhuis.server.domain.security.User;
 import com.imhuis.server.repository.UserDao;
 import com.imhuis.server.service.UserService;
 import org.springframework.stereotype.Service;

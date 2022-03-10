@@ -1,6 +1,6 @@
 package com.imhuis.server.service;
 
-import com.imhuis.server.domain.User;
+import com.imhuis.server.domain.security.User;
 
 import java.util.Optional;
 

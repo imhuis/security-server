@@ -1,8 +1,7 @@
-package com.imhuis.server.domain;
+package com.imhuis.server.domain.security;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import java.io.Serializable;
 import java.util.Objects;
 
