@@ -6,9 +6,12 @@ import com.imhuis.server.domain.securitybo.LoginDetails;
 import com.imhuis.server.domain.securitybo.TokenInfo;
 import com.imhuis.server.service.AuthService;
 import com.imhuis.server.service.TokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
  */
 @Component
 public class CustomizeAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(CustomizeAuthenticationSuccessHandler.class);
 
     @Autowired
     private TokenService tokenService;
@@ -55,6 +60,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         responseResult.setCode(0);
         responseResult.setMessage("Login success");
         responseResult.setData(tokenInfo);
+        log.info("sessionId {}", request.getSession().getId());
         ResponseUtil.out(response, responseResult);
     }
 

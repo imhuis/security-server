@@ -180,8 +180,8 @@ public class SecurityConfiguration {
         RequestMatcher others = new AntPathRequestMatcher("/**");
         AuthorizationManager<HttpServletRequest> authz = RequestMatcherDelegatingAuthorizationManager.builder()
                 .add(permitAll, (context, obj) -> new AuthorizationDecision(true))
-                .add(admin, AuthorityAuthorizationManager.hasRole("ADMIN"))
-                .add(api, AuthorityAuthorizationManager.hasRole("API"))
+                .add(admin, AuthorityAuthorizationManager.hasRole("admin"))
+                .add(api, AuthorityAuthorizationManager.hasRole("api"))
                 .add(any, new AuthenticatedAuthorizationManager())
                 .build();
         return (authentication, context) -> authz.check(authentication, context.getRequest());
