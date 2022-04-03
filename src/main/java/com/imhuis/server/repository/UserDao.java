@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * @author: imhuis
  * @date: 2021/9/1
- * @description:
+ * @description: UserDao interface
  */
 public interface UserDao extends JpaRepository<User, Long> {
 

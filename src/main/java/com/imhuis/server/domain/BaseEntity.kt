@@ -6,7 +6,7 @@ import javax.persistence.*
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description: 基础entity
+ * @description: base Entity
  */
 @MappedSuperclass
 open class BaseEntity : Serializable {

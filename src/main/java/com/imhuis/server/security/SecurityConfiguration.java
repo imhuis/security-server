@@ -1,5 +1,6 @@
 package com.imhuis.server.security;
 
+import com.imhuis.server.security.access.CustomAuthorizationManager;
 import com.imhuis.server.security.access.CustomizeFilterSecurityInterceptor;
 import com.imhuis.server.security.filter.PreLoginFilter;
 import com.imhuis.server.security.filter.TokenAuthenticationFilter;
@@ -89,14 +90,21 @@ public class SecurityConfiguration {
     @Autowired
     private AccessDecisionManager accessDecisionManager;
 
-    @Autowired
-    private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
+//    @Autowired
+//    private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.httpFirewall(httpFirewall());
     }
 
+    /**
+     * SecurityFilterChain
+     * @param http
+     * @param access
+     * @return
+     * @throws Exception
+     */
     @Bean
     @Order(1)
     protected SecurityFilterChain securityFilterChain(HttpSecurity http, AuthorizationManager<RequestAuthorizationContext> access) throws Exception {
@@ -174,12 +182,12 @@ public class SecurityConfiguration {
         return (authentication, context) -> authz.check(authentication, context.getRequest());
     }
 
-    @Bean
-    public CustomizeFilterSecurityInterceptor customizeFilterSecurityInterceptor() {
-        CustomizeFilterSecurityInterceptor filterSecurityInterceptor = new CustomizeFilterSecurityInterceptor(filterInvocationSecurityMetadataSource);
-        filterSecurityInterceptor.setAccessDecisionManager(accessDecisionManager);
-        return filterSecurityInterceptor;
-    }
+//    @Bean
+//    public CustomizeFilterSecurityInterceptor customizeFilterSecurityInterceptor() {
+//        CustomizeFilterSecurityInterceptor filterSecurityInterceptor = new CustomizeFilterSecurityInterceptor(filterInvocationSecurityMetadataSource);
+//        filterSecurityInterceptor.setAccessDecisionManager(accessDecisionManager);
+//        return filterSecurityInterceptor;
+//    }
 
 //    @Bean
 //    public AuthenticationManager authenticationManager() throws Exception {

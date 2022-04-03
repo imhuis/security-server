@@ -29,7 +29,7 @@ import org.springframework.security.web.firewall.HttpFirewall;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 老版本写法
  */
 //@EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)

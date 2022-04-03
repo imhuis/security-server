@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * @author: imhuis
  * @date: 2022/3/7
- * @description: 自定义权限拦截器
+ * @description: 自定义权限拦截器 相当于{@link org.springframework.security.web.access.intercept.FilterSecurityInterceptor}
  */
 public class CustomizeFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 

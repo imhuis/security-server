@@ -66,13 +66,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Set<String> userRolesStringList = userRoleService.getUserRolesString(user.getId());
         String authorityString = userRolesStringList.stream().collect(Collectors.joining(","));
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authorityString);
-//        List<? extends GrantedAuthority> grantedAuthorities = authorityString
-//                .stream().map(authority -> new SimpleGrantedAuthority(authority))
-//                .collect(Collectors.toList());
         log.info("find user [{}]", login);
         log.info("user info \n userid:{}", user.getUserId());
         return new SecurityUser(user.getUserName(), user.getPassword(), grantedAuthorities,
-                user.getUserId(), phone, email);
+                userId, phone, email);
     }
 
 }

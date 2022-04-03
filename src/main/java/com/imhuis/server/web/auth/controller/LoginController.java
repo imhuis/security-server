@@ -1,5 +1,8 @@
 package com.imhuis.server.web.auth.controller;
 
+import com.imhuis.server.common.base.ResponseResult;
+import com.imhuis.server.common.base.ResponseUtil;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -10,5 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
+    @RequestMapping("/public/register")
+    public ResponseResult register() {
+        return ResponseUtil.success();
+    }
 
 }
