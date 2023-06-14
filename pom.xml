@@ -24,7 +24,7 @@
         <spring-session.version>2021.1.2</spring-session.version>
         <keycloak-bom.version>15.0.2</keycloak-bom.version>
 
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <auth0.jwt.version>3.19.1</auth0.jwt.version>
 
         <kotlin.version>1.6.10</kotlin.version>
