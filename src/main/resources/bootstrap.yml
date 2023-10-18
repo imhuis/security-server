@@ -1,0 +1,12 @@
+#spring:
+#  application:
+#    name: security-server
+#  cloud:
+#    consul:
+#      host: localhost
+#      port: 8500
+#      discovery:
+#        instance-id: ${spring.application.name}:${server.port}
+#        prefer-ip-address: true
+#        enabled: true
+#      enabled: true

@@ -1,0 +1,13 @@
+spring:
+  data:
+    repositories:
+      enabled: false
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+  redis-db-2:
+    host: localhost
+    password:
+    port: 6379
+    database: 2
