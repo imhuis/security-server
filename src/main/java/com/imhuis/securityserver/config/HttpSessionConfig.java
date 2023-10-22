@@ -23,9 +23,9 @@ import org.springframework.session.web.http.HttpSessionIdResolver;
  * @date: 2020/1/28
  * @description:
  */
-@Configuration
-@EnableRedisHttpSession(redisNamespace = "ss:session",
-        maxInactiveIntervalInSeconds = 3600)
+//@Configuration
+//@EnableRedisHttpSession(redisNamespace = "ss:session",
+//        maxInactiveIntervalInSeconds = 3600)
 public class HttpSessionConfig extends AbstractSecurityWebApplicationInitializer implements BeanClassLoaderAware {
 
     private ClassLoader classLoader;

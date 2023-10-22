@@ -1,4 +1,4 @@
-package com.imhuis.securityserver.security.access;
+package com.imhuis.securityserver.security.Authorization;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authorization.AuthorizationDecision;

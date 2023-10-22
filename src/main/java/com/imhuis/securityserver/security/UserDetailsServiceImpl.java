@@ -1,6 +1,6 @@
 package com.imhuis.securityserver.security;
 
-import com.imhuis.securityserver.common.exception.CustomizeException;
+import com.imhuis.securityserver.security.exception.CustomizeException;
 import com.imhuis.securityserver.domain.securitybo.SecurityUser;
 import com.imhuis.securityserver.service.UserRoleService;
 import com.imhuis.securityserver.service.UserService;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: custom authentication
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

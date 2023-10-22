@@ -1,4 +1,4 @@
-package com.imhuis.securityserver.security.access;
+package com.imhuis.securityserver.security.Authorization;
 
 import jakarta.servlet.*;
 import org.springframework.security.access.SecurityMetadataSource;

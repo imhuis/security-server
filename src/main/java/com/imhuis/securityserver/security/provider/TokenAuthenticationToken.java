@@ -1,4 +1,4 @@
-package com.imhuis.securityserver.domain.securitybo;
+package com.imhuis.securityserver.security.provider;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,11 +10,11 @@ import java.util.Collection;
  * @date: 2020/1/28
  * @description:
  */
-public class TokenAuthentication implements Authentication {
+public class TokenAuthenticationToken implements Authentication {
 
     private String token;
 
-    public TokenAuthentication(String token) {
+    public TokenAuthenticationToken(String token) {
         this.token = token;
     }
 
@@ -52,4 +52,5 @@ public class TokenAuthentication implements Authentication {
     public String getName() {
         return null;
     }
+
 }

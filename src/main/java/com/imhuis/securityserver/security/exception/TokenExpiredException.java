@@ -1,4 +1,4 @@
-package com.imhuis.securityserver.common.exception;
+package com.imhuis.securityserver.security.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

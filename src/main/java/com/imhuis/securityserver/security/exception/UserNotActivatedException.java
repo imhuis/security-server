@@ -1,4 +1,4 @@
-package com.imhuis.securityserver.common.exception;
+package com.imhuis.securityserver.security.exception;
 
 import javax.naming.AuthenticationException;
 

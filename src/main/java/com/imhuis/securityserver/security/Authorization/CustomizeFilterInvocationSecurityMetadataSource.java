@@ -1,11 +1,10 @@
-package com.imhuis.securityserver.security.access;
+package com.imhuis.securityserver.security.Authorization;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.PathMatcher;
 
 import java.util.Collection;

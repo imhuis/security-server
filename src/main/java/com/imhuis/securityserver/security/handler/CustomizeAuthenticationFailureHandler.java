@@ -2,7 +2,7 @@ package com.imhuis.securityserver.security.handler;
 
 import com.imhuis.securityserver.common.base.ResponseResult;
 import com.imhuis.securityserver.common.base.ResponseUtil;
-import com.imhuis.securityserver.common.exception.CaptchaValidateException;
+import com.imhuis.securityserver.security.exception.CaptchaValidateException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

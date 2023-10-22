@@ -1,6 +1,5 @@
 package com.imhuis.securityserver.security.provider;
 
-import com.imhuis.securityserver.domain.securitybo.TokenAuthentication;
 import com.imhuis.securityserver.domain.securitybo.TokenInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +36,12 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Token is Invalid");
         }
 
-        return new TokenAuthentication(token);
+        return new TokenAuthenticationToken(token);
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return TokenAuthentication.class.isAssignableFrom(authentication);
+        return TokenAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
     public TokenInfo createToken(UserDetails userDetails) {

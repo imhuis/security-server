@@ -1,4 +1,4 @@
-package com.imhuis.securityserver.web.auth.controller;
+package com.imhuis.securityserver.web.authentication.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

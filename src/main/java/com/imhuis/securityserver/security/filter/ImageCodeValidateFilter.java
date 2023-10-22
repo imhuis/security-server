@@ -1,7 +1,7 @@
 package com.imhuis.securityserver.security.filter;
 
 import com.imhuis.securityserver.common.constant.SecurityConstants;
-import com.imhuis.securityserver.common.exception.CaptchaValidateException;
+import com.imhuis.securityserver.security.exception.CaptchaValidateException;
 import com.imhuis.securityserver.common.util.JsonTools;
 import io.micrometer.core.instrument.util.IOUtils;
 import jakarta.servlet.FilterChain;

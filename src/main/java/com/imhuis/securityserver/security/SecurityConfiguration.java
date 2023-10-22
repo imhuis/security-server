@@ -2,44 +2,32 @@ package com.imhuis.securityserver.security;
 
 import com.imhuis.securityserver.security.filter.PreLoginFilter;
 import com.imhuis.securityserver.security.handler.CustomizeAccessDeniedHandler;
-import com.imhuis.securityserver.security.access.CustomAuthorizationManager;
-import com.imhuis.securityserver.security.access.CustomizeFilterSecurityInterceptor;
-import com.imhuis.securityserver.security.filter.PreLoginFilter;
 import com.imhuis.securityserver.security.filter.TokenAuthenticationFilter;
 import com.imhuis.securityserver.security.filter.UsernamePasswordJsonAuthenticationFilter;
 import com.imhuis.securityserver.security.token.TokenAuthenticationProvider;
-import com.imhuis.securityserver.security.handler.CustomizeAccessDeniedHandler;
 import jakarta.servlet.http.HttpServletRequest;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.access.vote.RoleHierarchyVoter;
-import org.springframework.security.authentication.AuthenticationEventPublisher;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.AbstractRequestMatcherRegistry;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -91,8 +79,8 @@ public class SecurityConfiguration {
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
 
-//    @Autowired
-//    private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
+    @Autowired
+    private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -109,16 +97,17 @@ public class SecurityConfiguration {
      */
     @Bean
     @Order(1)
-    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthorizationManager<RequestAuthorizationContext> access) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, @Qualifier("authorizationManager") AuthorizationManager<RequestAuthorizationContext> access) throws Exception {
         AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
         http
                 .authenticationProvider(daoAuthenticationProvider())
-//                .authenticationProvider(tokenAuthenticationProvider())
+                .authenticationProvider(tokenAuthenticationProvider())
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
+//                        .anyRequest().authenticated()
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).permitAll()
+//                        .requestMatchers(EndpointRequest.to(MetricsEndpoint.class)).permitAll()
                         .anyRequest().access(access)
                 )
                 .formLogin(formLogin -> formLogin
@@ -137,20 +126,20 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
                 .and()
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionConcurrency(concurrency -> concurrency
-                                .maximumSessions(1))
-                )
+//                .sessionManagement(sessionManagement -> sessionManagement
+//                        .sessionConcurrency(concurrency -> concurrency
+//                                .maximumSessions(1))
+//                )
                 .headers(headersCustomizer -> headersCustomizer
                         .addHeaderWriter((request, response) -> response.setHeader("timestamp", Instant.now().toString())))
-                .addFilterBefore(new TokenAuthenticationFilter(authenticationManager), BasicAuthenticationFilter.class)
+//                .addFilterBefore(new TokenAuthenticationFilter(authenticationManager), BasicAuthenticationFilter.class)
                 .addFilterBefore(new PreLoginFilter("/login"), UsernamePasswordAuthenticationFilter.class);
         ;
         return http.build();
     }
 
     @Bean
-    AuthorizationManager<RequestAuthorizationContext> requestMatcherAuthorizationManager(HandlerMappingIntrospector introspector) {
+    AuthorizationManager<RequestAuthorizationContext> authorizationManager(HandlerMappingIntrospector introspector) {
         RequestMatcher permitAll = new AndRequestMatcher(
                 new AntPathRequestMatcher("/**/*.html"),
                 new AntPathRequestMatcher("/**/*.css"),
@@ -181,11 +170,22 @@ public class SecurityConfiguration {
 //    }
 
 //    @Bean
-//    public AuthenticationManager authenticationManager() throws Exception {
+//    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 //        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-//        AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder();
-//        return null;
+////        AuthenticationManagerBuilder builder = new AuthenticationManagerBuilder();
+//        return authenticationManager;
 //    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(authenticationProvider);
+    }
 
     public UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
         UsernamePasswordJsonAuthenticationFilter usernamePasswordJsonAuthenticationFilter =

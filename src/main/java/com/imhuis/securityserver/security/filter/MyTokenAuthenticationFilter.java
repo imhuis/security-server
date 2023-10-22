@@ -2,7 +2,7 @@ package com.imhuis.securityserver.security.filter;
 
 import com.google.common.base.Strings;
 import com.imhuis.securityserver.common.constant.SecurityConstants;
-import com.imhuis.securityserver.domain.securitybo.TokenAuthentication;
+import com.imhuis.securityserver.security.provider.TokenAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +42,7 @@ public class MyTokenAuthenticationFilter extends BasicAuthenticationFilter {
         // start Authentication
         try {
             logger.info("start token authentication");
-            TokenAuthentication authRequest = this.convert(request);
+            TokenAuthenticationToken authRequest = this.convert(request);
             if (authRequest == null){
                 chain.doFilter(request, response);
                 return;
@@ -65,7 +65,7 @@ public class MyTokenAuthenticationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-    private TokenAuthentication convert(HttpServletRequest request){
+    private TokenAuthenticationToken convert(HttpServletRequest request){
         String headerTokenInServlet = request.getHeader(SecurityConstants.TOKEN_HEADER_NAME);
         String requestToken;
         if (!Strings.isNullOrEmpty(headerTokenInServlet)){
@@ -79,8 +79,8 @@ public class MyTokenAuthenticationFilter extends BasicAuthenticationFilter {
             }
         }
 
-        TokenAuthentication tokenAuthentication = new TokenAuthentication(requestToken.toLowerCase().trim());
-        return tokenAuthentication;
+        TokenAuthenticationToken tokenAuthenticationToken = new TokenAuthenticationToken(requestToken.toLowerCase().trim());
+        return tokenAuthenticationToken;
 
     }
 }
